@@ -22,8 +22,8 @@ interface Attributes {
 }
 
 export function zoom(node: SVGSVGElement): ActionReturn<{}, Attributes> {
-  const viewBox = node.viewBox
-  screenToRealMatrix = getScreenToRealMatrix()
+  let viewBox = node.viewBox.baseVal
+  screenToRealMatrix = getScreenToRealMatrix(viewBox)
   
   const handleWheel = (event: WheelEvent) => {
     const {deltaY, deltaX} = event
@@ -57,14 +57,15 @@ export function zoom(node: SVGSVGElement): ActionReturn<{}, Attributes> {
     endDrag(event)
   }
   
-  function getScreenToRealMatrix() {
+  function getScreenToRealMatrix(viewBox: DOMRect) {
     return (DOMMatrix.fromMatrix(node.getScreenCTM() as DOMMatrix))
       .scale(1, -1)
-      .translate(0, -((viewBox.baseVal.height + 2 * viewBox.baseVal.y)))
+      .translate(0, -(( 2 * viewBox.y + viewBox.height)))
       .inverse()
   }
   
   function startDrag(event: MouseEvent | TouchEvent) {
+    screenToRealMatrix = getScreenToRealMatrix(viewBox)
     startingPoint = screenToRealMatrix.transformPoint(screenPoint(event))
     console.log('startingPoint', startingPoint)
     isDragging = true
@@ -80,7 +81,7 @@ export function zoom(node: SVGSVGElement): ActionReturn<{}, Attributes> {
     const current = screenToRealMatrix.transformPoint(screenPoint(event))
     if (isDragging && startingPoint) {
       const deltaX = current.x - startingPoint.x
-      const deltaY = -(current.y - startingPoint.y)
+      const deltaY = (current.y - startingPoint.y)
       node.dispatchEvent(new CustomEvent<PanEventDetail>('pan', {detail: {deltaY, deltaX}}))
       startingPoint = current
     }
@@ -132,6 +133,10 @@ export function zoom(node: SVGSVGElement): ActionReturn<{}, Attributes> {
   node.addEventListener('mouseleave', endDrag, options)
   
   return {
+    update(parameter: {}) {
+      viewBox = node.viewBox.baseVal
+      screenToRealMatrix = getScreenToRealMatrix(viewBox)
+    },
     destroy() {
       node.removeEventListener('wheel', handleWheel, options)
       node.removeEventListener('touchstart', touchStart, options)
