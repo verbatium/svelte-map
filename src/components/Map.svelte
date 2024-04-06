@@ -7,7 +7,7 @@
 
   let svgElement: SVGElement
   let zoomLevel = 3
-  let viewBox = {
+  let viewBox: DOMRect = {
     x: 365000,
     y: 6375000,
     width: 740000 - 365000,
@@ -64,7 +64,7 @@
 <button class="border-amber-600 border-2 m-3 p-3" onclick={()=>doZoom(-1)}>-</button>
 <button class="border-amber-600 border-2  m-3 p-3" onclick={()=>doZoom(+1)}>+</button>
 <div>Zoom: {zoomLevel}</div>
-<div>Location: {cursor?.x}, {cursor?.y}</div>
+<div>Location: {Math.round(cursor?.x,2)}, {Math.round(cursor?.y,2)}</div>
 <div>Size: {width}, {height}</div>
 <svg
   {...$$restProps}
@@ -80,7 +80,7 @@
   xmlns="http://www.w3.org/2000/svg"
 >
   <g transform="matrix(1 0 0 -1 0 {2 * viewBox.y + viewBox.height})">
-    <MapLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/epk_vv@LEST" zoomLevel={zoomLevel}/>
+    <MapLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/epk_vv@LEST" zoomLevel={zoomLevel} viewBox={viewBox}/>
     {#each [0, 256, 512, 768, 1025] as x}
       <line x1="0" y1="{x}" x2="1024" y2="{x}" stroke="black"></line>
       <line x1={x} y1="0" x2="{x}" y2="1024" stroke="black"></line>

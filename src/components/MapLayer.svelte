@@ -1,21 +1,17 @@
 <script lang="ts">
 
   import {downloadTileMap, type TileMap} from '$lib/tms'
+  import {debounce} from '$lib/debounce'
 
   export let tileMapUrl: string
   export let zoomLevel: number
+  export let viewBox: DOMRect
+
   let tileMap: TileMap
   let level: { href: string; unitsPerPixel: number; order: number }
 
   let tilesPerAxis: number
   $: download(tileMapUrl)
-  $: tileMap && zoomLevel !== undefined && selectZoomLevel(tileMap, zoomLevel)
-  $: tilesPerAxis = Math.pow(2, zoomLevel)
-
-  //<BoundingBox minx="365000.000000" miny="6375000.000000" maxx="740000.000000" maxy="6635000.000000"/>
-  //<Origin x="40500.000000" y="5993000.000000"/>
-  //<TileFormat width="256" height="256" mime-type="image/png" extension="png"/>
-  //<TileSet href="https://tiles.maaamet.ee/tm/tms/1.0.0/epk_mv@LEST/0" units-per-pixel="4000.00000000000000000000" order="0"/>
 
   function selectZoomLevel(tileMap: TileMap, zoomLevel: number) {
     level = tileMap.tileSets.find(i => i.order === +zoomLevel)
@@ -25,17 +21,46 @@
     tileMap = await downloadTileMap(url)
   }
 
+  function getTiles(tilesPerAxis: number, viewBox: DOMRect): { x: number, y: number } [] {
+    const startX = (viewBox.x - tileMap.origin.x) / tileMap.tileFormat.width / level.unitsPerPixel - 1
+    const startY = (viewBox.y - tileMap.origin.y) / tileMap.tileFormat.height / level.unitsPerPixel - 1
+    const endX = Math.min(startX + viewBox.width / tileMap.tileFormat.width / level.unitsPerPixel + 2, tilesPerAxis)
+    const endY = Math.min(startY + viewBox.height / tileMap.tileFormat.height / level.unitsPerPixel + 2, tilesPerAxis)
+    let xTilesCount = Math.ceil(endX) - Math.floor(startX)
+    let yTilesCount = Math.ceil(endY) - Math.floor(startY)
+
+    return [...Array(xTilesCount).keys()].map(x => {
+      return [...Array(yTilesCount).keys()].map(y => ({
+        z: level.order,
+        x: Math.floor(startX) + x,
+        y: Math.floor(startY) + y,
+      }))
+    }).flat()
+  }
+
+
+  let visibleTiles: { x: number, y: number }[] = []
+
+  const debouncedTileCalculator = debounce(calculateTiles, 20)
+  $: tileMap && zoomLevel !== undefined && viewBox && debouncedTileCalculator(viewBox, zoomLevel)
+
+
+  function calculateTiles(viewBox: DOMRect) {
+    tileMap && zoomLevel !== undefined && selectZoomLevel(tileMap, zoomLevel)
+    tilesPerAxis = Math.pow(2, zoomLevel)
+    if (tileMap && viewBox && tilesPerAxis) {
+      visibleTiles = [...visibleTiles.filter(t => t.z === zoomLevel), ...getTiles(tilesPerAxis, viewBox)]
+    }
+    console.log(visibleTiles)
+  }
+
 </script>
-<text y="1rem">level: {JSON.stringify(level)} </text>
-<text y="2rem">zoomLevel: {zoomLevel} </text>
-<text y="3rem">tilesPerAxis: {tilesPerAxis} </text>
 {#if level && tilesPerAxis}
   <g transform="translate({tileMap.origin.x}, {tileMap.origin.y})">
     <g transform="scale({level.unitsPerPixel},{-level.unitsPerPixel})">
-      {#each [...Array(tilesPerAxis).keys()] as x}
-        {#each [...Array(tilesPerAxis).keys()] as y}
-          <image x={ 256.0 * x} y={256.0 *  (-y -1)} href={`${level.href}/${x}/${y}`} transform="scale(1,1)"/>
-        {/each}
+      {#each visibleTiles as tile (`${tile.z}/${tile.x}/${tile.y}`)}
+        <image x={ tileMap.tileFormat.width * tile.x} y={-tileMap.tileFormat.height *  (tile.y +1)}
+               href={`${level.href}/${tile.x}/${tile.y}`} transform="scale(1,1)"/>
       {/each}
     </g>
   </g>
