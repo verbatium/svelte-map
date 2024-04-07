@@ -1,26 +1,32 @@
-export function screenPoint(event: MouseEvent | TouchEvent): DOMPoint {
-	if (event instanceof MouseEvent) {
-		return new DOMPoint(event.clientX, event.clientY);
-	} else if (event instanceof TouchEvent) {
-		return new DOMPoint(event.touches[0].clientX, event.touches[0].clientY);
-	} else {
-		return new DOMPoint(0, 0);
-	}
+export function mousePoint(event: MouseEvent) {
+  return new DOMPoint(event.clientX, event.clientY)
 }
 
-export function touchPoints(event: TouchEvent): DOMPoint[] {
-	const result = [];
-	for (let i = 0; i < event.touches.length; i++) {
-		result[i] = new DOMPoint(event.touches[i].clientX, event.touches[i].clientY);
-	}
-	return result;
+export function touchPoint(event: TouchEvent) {
+  return new DOMPoint(event.touches[0].clientX, event.touches[0].clientY)
 }
 
 export function twoTouchDistance(event: TouchEvent) {
-	if (event.touches.length == 2) {
-		const dx = event.touches[0].clientX - event.touches[1].clientX;
-		const dy = event.touches[0].clientY - event.touches[1].clientY;
-		return Math.sqrt(dx * dx + dy * dy);
-	}
-	return undefined;
+  if (event.touches.length == 2) {
+    const dx = event.touches[0].clientX - event.touches[1].clientX
+    const dy = event.touches[0].clientY - event.touches[1].clientY
+    return Math.sqrt(dx * dx + dy * dy)
+  }
+  return undefined
+}
+
+export function limitPointToRange(point: DOMPoint, min: number, max: number) {
+  return new DOMPoint(limitNumberToRange(point.x, min, max), limitNumberToRange(point.y, min, max))
+}
+
+export function floorPoint(point: DOMPoint): DOMPoint {
+  return new DOMPoint(Math.floor(point.x), Math.floor(point.y))
+}
+
+export function ceilPoint(point: DOMPoint): DOMPoint {
+  return new DOMPoint(Math.ceil(point.x), Math.ceil(point.y))
+}
+
+export function limitNumberToRange(n: number, min: number, max: number): number {
+  return Math.min(Math.max(n, min), max)
 }

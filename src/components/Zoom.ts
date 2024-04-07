@@ -1,13 +1,9 @@
-import {twoTouchDistance} from '$lib/graphics'
+import {mousePoint, touchPoint, twoTouchDistance} from '$lib/graphics'
 import type {ActionReturn} from 'svelte/action'
 
 let screenToRealMatrix: DOMMatrix
-//let matrix: DOMMatrix
-
 let isDragging = false
 let startingPoint: DOMPoint | undefined = undefined
-
-//let delta: DOMPoint | undefined = undefined
 
 export interface PanEventDetail {
   deltaY: number;
@@ -46,56 +42,44 @@ export function zoom(node: SVGSVGElement): ActionReturn<{}, Attributes> {
     event.stopPropagation()
     switch (event.touches.length) {
       case 1:
-        startDrag(event)
+        startDrag(touchPoint(event))
         break
       case 2:
         twoFingerDistance = twoTouchDistance(event)
     }
   }
   
-  const touchend = (event: TouchEvent) => {
-    endDrag(event)
-  }
-  
   function getScreenToRealMatrix(viewBox: DOMRect) {
     return (DOMMatrix.fromMatrix(node.getScreenCTM() as DOMMatrix))
       .scale(1, -1)
-      .translate(0, -(( 2 * viewBox.y + viewBox.height)))
+      .translate(0, -((2 * viewBox.y + viewBox.height)))
       .inverse()
   }
   
-  function startDrag(event: MouseEvent | TouchEvent) {
+  function startDrag(current: DOMPoint) {
     screenToRealMatrix = getScreenToRealMatrix(viewBox)
-    startingPoint = screenToRealMatrix.transformPoint(screenPoint(event))
-    console.log('startingPoint', startingPoint)
+    startingPoint = screenToRealMatrix.transformPoint(current)
     isDragging = true
     return false
   }
   
-  function endDrag(event: MouseEvent | TouchEvent) {
+  function endDrag() {
     isDragging = false
     startingPoint = undefined
   }
   
-  function mousemove(event: MouseEvent | TouchEvent) {
-    const current = screenToRealMatrix.transformPoint(screenPoint(event))
+  function move(current: DOMPoint) {
     if (isDragging && startingPoint) {
       const deltaX = current.x - startingPoint.x
-      const deltaY = (current.y - startingPoint.y)
+      const deltaY = current.y - startingPoint.y
       node.dispatchEvent(new CustomEvent<PanEventDetail>('pan', {detail: {deltaY, deltaX}}))
       startingPoint = current
     }
     node.dispatchEvent(new CustomEvent<DOMPoint>('cursor', {detail: current}))
   }
   
-  function screenPoint(event: MouseEvent | TouchEvent): DOMPoint {
-    if (event instanceof MouseEvent) {
-      return new DOMPoint(event.clientX, event.clientY)
-    } else if (event instanceof TouchEvent) {
-      return new DOMPoint(event.touches[0].clientX, event.touches[0].clientY)
-    } else {
-      return new DOMPoint(0, 0)
-    }
+  function mousemove(event: MouseEvent) {
+    move(screenToRealMatrix.transformPoint(mousePoint(event)))
   }
   
   
@@ -104,9 +88,10 @@ export function zoom(node: SVGSVGElement): ActionReturn<{}, Attributes> {
     event.stopPropagation()
     const currentDistance = twoTouchDistance(event)
     if (event.touches.length === 1) {
-      mousemove(event)
+      move(screenToRealMatrix.transformPoint(touchPoint(event)))
     } else {
       if (twoFingerDistance && currentDistance) {
+        Math.sign(currentDistance - twoFingerDistance)
         if (currentDistance - twoFingerDistance > 0) {
           node.dispatchEvent(new CustomEvent('zoomIn'))
         } else {
@@ -118,22 +103,23 @@ export function zoom(node: SVGSVGElement): ActionReturn<{}, Attributes> {
   }
   
   function mouseDown(event: MouseEvent) {
-    startDrag(event)
+    event.preventDefault()
+    startDrag(mousePoint(event))
   }
   
   const options: AddEventListenerOptions = {passive: false, capture: true}
   node.addEventListener('wheel', handleWheel, options)
   node.addEventListener('touchstart', touchStart, options)
   node.addEventListener('touchmove', touchMove, options)
-  node.addEventListener('touchend', touchend, options)
-  node.addEventListener('touchcancel', touchend, options)
+  node.addEventListener('touchend', endDrag, options)
+  node.addEventListener('touchcancel', endDrag, options)
   node.addEventListener('mousedown', mouseDown, options)
   node.addEventListener('mouseup', endDrag, options)
   node.addEventListener('mousemove', mousemove, options)
   node.addEventListener('mouseleave', endDrag, options)
   
   return {
-    update(parameter: {}) {
+    update() {
       viewBox = node.viewBox.baseVal
       screenToRealMatrix = getScreenToRealMatrix(viewBox)
     },
@@ -141,12 +127,12 @@ export function zoom(node: SVGSVGElement): ActionReturn<{}, Attributes> {
       node.removeEventListener('wheel', handleWheel, options)
       node.removeEventListener('touchstart', touchStart, options)
       node.removeEventListener('touchmove', touchMove, options)
-      node.removeEventListener('touchend', touchend, options)
-      node.removeEventListener('touchcancel', touchend, options)
+      node.removeEventListener('touchend', endDrag, options)
+      node.removeEventListener('touchcancel', endDrag, options)
       node.removeEventListener('mousedown', mouseDown, options)
       node.removeEventListener('mouseup', endDrag, options)
-      node.removeEventListener('mouseleave', endDrag, options)
       node.removeEventListener('mousemove', mousemove, options)
+      node.removeEventListener('mouseleave', endDrag, options)
     },
   }
 }
