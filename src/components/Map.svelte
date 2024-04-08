@@ -80,7 +80,9 @@
   xmlns="http://www.w3.org/2000/svg"
 >
   <g transform="matrix(1 0 0 -1 0 {2 * viewBox.y + viewBox.height})">
-    <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/foto@LEST" viewBox={viewBox} zoomLevel={z}/>
+<!--    <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/foto@LEST" viewBox={viewBox} zoomLevel={z}/>-->
+    <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/vreljeef@LEST" viewBox={viewBox} zoomLevel={z} transparent="false"/>
+    <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/topo@LEST" viewBox={viewBox} zoomLevel={z} transparent="true"/>
     <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/hybriid@LEST" viewBox={viewBox} zoomLevel={z} transparent="true"/>
   </g>
 </svg>
