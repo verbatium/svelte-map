@@ -30,3 +30,8 @@ export function ceilPoint(point: DOMPoint): DOMPoint {
 export function limitNumberToRange(n: number, min: number, max: number): number {
   return Math.min(Math.max(n, min), max)
 }
+
+export interface Point {
+  x: number,
+  y: number
+}

@@ -6,6 +6,7 @@
   import {afterUpdate} from 'svelte'
   import {lest97} from '$lib/lamber'
   import {limitNumberToRange} from '$lib/graphics'
+  import WmsLayer from './WmsLayer.svelte'
 
   let svgElement: SVGElement
   let zoomSpeed = 0.05
@@ -30,12 +31,10 @@
 
   function zoomIn() {
     zoomLevel = limitNumberToRange(zoomLevel + zoomSpeed, 0, 14.95)
-    console.log('zoomIn')
   }
 
   function zoomOut() {
     zoomLevel = limitNumberToRange(zoomLevel - zoomSpeed, 0, 14.95)
-    console.log('zoomOut')
   }
 
   function doZoom(value: number) {
@@ -43,7 +42,7 @@
   }
 
   function changeViewBox(zoomLevel: number) {
-    var k = Math.pow(2, zoomLevel-3)
+    var k = Math.pow(2, zoomLevel - 3)
 
     const centerX = viewBox.x + viewBox.width / 2
     const centerY = viewBox.y + viewBox.height / 2
@@ -64,8 +63,9 @@
 </script>
 <button class="border-amber-600 border-2 m-3 p-3" onclick={()=>doZoom(-1)}>-</button>
 <button class="border-amber-600 border-2  m-3 p-3" onclick={()=>doZoom(+1)}>+</button>
-<span class="ml-2">Zoom: {zoomLevel} Location: {Math.round(cursor?.x)}, {Math.round(cursor?.y)} ({Math.round(latLon[0] * 10000)/10000}
-  , {Math.round(latLon[1]*10000)/10000}) {zoomLevel}</span>
+<span class="ml-2">Zoom: {zoomLevel} Location: {Math.round(cursor?.x)}, {Math.round(cursor?.y)}
+  ({Math.round(latLon[0] * 10000) / 10000}
+  , {Math.round(latLon[1] * 10000) / 10000}) {zoomLevel}</span>
 <svg
   {...$$restProps}
   bind:this={svgElement}
@@ -80,9 +80,13 @@
   xmlns="http://www.w3.org/2000/svg"
 >
   <g transform="matrix(1 0 0 -1 0 {2 * viewBox.y + viewBox.height})">
-<!--    <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/foto@LEST" viewBox={viewBox} zoomLevel={z}/>-->
-    <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/vreljeef@LEST" viewBox={viewBox} zoomLevel={z} transparent="false"/>
-    <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/topo@LEST" viewBox={viewBox} zoomLevel={z} transparent="true"/>
-    <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/hybriid@LEST" viewBox={viewBox} zoomLevel={z} transparent="true"/>
+    <!--    <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/foto@LEST" viewBox={viewBox} zoomLevel={z}/>-->
+    <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/vreljeef@LEST" transparent="false" viewBox={viewBox}
+               zoomLevel={z}/>
+    <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/topo@LEST" transparent="true" viewBox={viewBox}
+               zoomLevel={z}/>
+    <WmsLayer viewBox={viewBox} zoomLevel={zoomLevel}/>
+    <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/hybriid@LEST" transparent="true" viewBox={viewBox}
+               zoomLevel={z}/>
   </g>
 </svg>

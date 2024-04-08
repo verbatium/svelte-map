@@ -3,17 +3,12 @@
 
   import {downloadTileMap, type TileMap} from '$lib/tms'
   import {debounce} from '$lib/debounce'
-  import {ceilPoint, floorPoint, limitPointToRange} from '$lib/graphics'
+  import {ceilPoint, floorPoint, limitPointToRange, type Point} from '$lib/graphics'
 
   export let tileMapUrl: string
   export let zoomLevel: number
   export let viewBox: DOMRect
   export let transparent =false
-
-  interface Point {
-    x: number,
-    y: number
-  }
 
   let tileMap: TileMap
   let level: { href: string; unitsPerPixel: number; order: number }
@@ -34,6 +29,7 @@
   }
 
   function getTiles(tilesPerAxis: number, viewBox: DOMRect): Point [] {
+    const level = getLevel(zoomLevel)
     const m = new DOMMatrix()
       .translate(tileMap.origin.x, tileMap.origin.y)
       .scale(tileMap.tileFormat.width, tileMap.tileFormat.height)
@@ -77,8 +73,6 @@
     } else {
       layers = Array.from(visibleTiles.keys()).filter(l=> l<=zoomLevel).sort((a, b) => a - b)
     }
-
-    console.log('layers', layers, visibleTiles)
   }
 
 </script>
@@ -87,7 +81,7 @@
     {#each layers as level (level)}
     <g transform="scale({getLevel(level).unitsPerPixel},{-(getLevel(level).unitsPerPixel)})">
         {#each visibleTiles.get(level) as tile (tile.href)}
-          <image x={tile.x} y={tile.y} href={tile.href}/>
+          <image x={Math.floor(tile.x)} y={Math.floor(tile.y)} href={tile.href}/>
         {/each}
     </g>
     {/each}

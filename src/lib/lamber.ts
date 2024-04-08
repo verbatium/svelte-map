@@ -291,7 +291,6 @@ export class LambertConformalConic implements Projection {
     const N = this._R0 + this._N0 - R * this.cos(y)
     // k grid scale factor at a general point
     const k = this.W(sinB) * R * this._sinB0 / (this._spheroid.a * this.cos(B))
-    console.log('k = ', k)
     return [E, N]
   }
   
@@ -336,7 +335,3 @@ export class LambertConformalConic implements Projection {
 
 export const lest97 = new Lest97()
 const llc = new LambertConformalConic2(GRS_1980, 35, 65, 52, 10, 4_000_000, 2_800_000)
-console.log(llc.directConversion(50.00, 5.00))
-console.log(llc.inverseConversion(3654072.12, 2596848.66))
-console.log(llc.directConversion(60.00, 5.00))
-console.log(llc.inverseConversion(3727054.58, 3673790.20))
