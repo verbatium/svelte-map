@@ -64,8 +64,8 @@
 </script>
 <button class="border-amber-600 border-2 m-3 p-3" onclick={()=>doZoom(-1)}>-</button>
 <button class="border-amber-600 border-2  m-3 p-3" onclick={()=>doZoom(+1)}>+</button>
-<span class="ml-2">Zoom: {zoomLevel} Location: {Math.round(cursor?.x)}, {Math.round(cursor?.y)} ({latLon[0]}
-  , {latLon[1]}) {z}</span>
+<span class="ml-2">Zoom: {zoomLevel} Location: {Math.round(cursor?.x)}, {Math.round(cursor?.y)} ({Math.round(latLon[0] * 10000)/10000}
+  , {Math.round(latLon[1]*10000)/10000}) {z}</span>
 <svg
   {...$$restProps}
   bind:this={svgElement}
@@ -81,6 +81,6 @@
 >
   <g transform="matrix(1 0 0 -1 0 {2 * viewBox.y + viewBox.height})">
     <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/foto@LEST" viewBox={viewBox} zoomLevel={z}/>
-    <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/hybriid@LEST" viewBox={viewBox} zoomLevel={z}/>
+    <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/hybriid@LEST" viewBox={viewBox} zoomLevel={z} transparent="true"/>
   </g>
 </svg>

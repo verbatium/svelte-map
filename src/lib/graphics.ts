@@ -20,11 +20,11 @@ export function limitPointToRange(point: DOMPoint, min: number, max: number) {
 }
 
 export function floorPoint(point: DOMPoint): DOMPoint {
-  return new DOMPoint(Math.floor(point.x), Math.floor(point.y))
+  return new DOMPoint(Math.floor(point.x - 0.5), Math.floor(point.y - 0.5))
 }
 
 export function ceilPoint(point: DOMPoint): DOMPoint {
-  return new DOMPoint(Math.ceil(point.x), Math.ceil(point.y))
+  return new DOMPoint(Math.ceil(point.x + 0.5), Math.ceil(point.y + 0.5))
 }
 
 export function limitNumberToRange(n: number, min: number, max: number): number {
