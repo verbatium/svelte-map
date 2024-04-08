@@ -75,7 +75,7 @@
     if (transparent) {
       layers = [zoomLevel]
     } else {
-      layers = Array.from(visibleTiles.keys()).sort((a, b) => a - b)
+      layers = Array.from(visibleTiles.keys()).filter(l=> l<=zoomLevel).sort((a, b) => a - b)
     }
 
     console.log('layers', layers, visibleTiles)
