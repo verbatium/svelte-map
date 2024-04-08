@@ -11,7 +11,7 @@
   let zoomSpeed = 0.05
   let zoomLevel = 3
   let z = 3
-  $: z = Math.ceil(zoomLevel)
+  $: z = Math.floor(zoomLevel)
   $: changeViewBox(zoomLevel)
   let maxWidth = 740000 - 365000
   let maxHeight = 6635000 - 6375000
@@ -29,17 +29,17 @@
   $: latLon = lest97.inverseConversion(cursor?.x ?? 0, cursor?.y ?? 0)
 
   function zoomIn() {
-    zoomLevel = limitNumberToRange(zoomLevel + zoomSpeed, 0, 14)
+    zoomLevel = limitNumberToRange(zoomLevel + zoomSpeed, 0, 14.95)
     console.log('zoomIn')
   }
 
   function zoomOut() {
-    zoomLevel = limitNumberToRange(zoomLevel - zoomSpeed, 0, 14)
+    zoomLevel = limitNumberToRange(zoomLevel - zoomSpeed, 0, 14.95)
     console.log('zoomOut')
   }
 
   function doZoom(value: number) {
-    zoomLevel = limitNumberToRange(zoomLevel + value, 0, 14)
+    zoomLevel = limitNumberToRange(zoomLevel + value, 0, 14.95)
   }
 
   function changeViewBox(zoomLevel: number) {
@@ -65,7 +65,7 @@
 <button class="border-amber-600 border-2 m-3 p-3" onclick={()=>doZoom(-1)}>-</button>
 <button class="border-amber-600 border-2  m-3 p-3" onclick={()=>doZoom(+1)}>+</button>
 <span class="ml-2">Zoom: {zoomLevel} Location: {Math.round(cursor?.x)}, {Math.round(cursor?.y)} ({Math.round(latLon[0] * 10000)/10000}
-  , {Math.round(latLon[1]*10000)/10000}) {z}</span>
+  , {Math.round(latLon[1]*10000)/10000}) {zoomLevel}</span>
 <svg
   {...$$restProps}
   bind:this={svgElement}
