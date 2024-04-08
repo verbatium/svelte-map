@@ -30,6 +30,7 @@
 
   function getTiles(tilesPerAxis: number, viewBox: DOMRect): Point [] {
     const level = getLevel(zoomLevel)
+    if (!level) return  []
     const m = new DOMMatrix()
       .translate(tileMap.origin.x, tileMap.origin.y)
       .scale(tileMap.tileFormat.width, tileMap.tileFormat.height)
