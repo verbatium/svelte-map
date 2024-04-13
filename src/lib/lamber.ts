@@ -13,13 +13,32 @@
 //     PARAMETER["Latitude_Of_Origin",57.5175539305556],
 //     UNIT["Meter",1.0]]
 
-interface Spheroid {
+//PROJCS["LKS-92 / Latvia TM",
+//     GEOGCS["LKS-92",
+//         DATUM["Latvian_geodetic_coordinate_system_1992",
+//             SPHEROID["GRS 1980",6378137,298.257222101],
+//             TOWGS84[0,0,0,0,0,0,0]],
+//         PRIMEM["Greenwich",0,
+//             AUTHORITY["EPSG","8901"]],
+//         UNIT["degree",0.0174532925199433,
+//             AUTHORITY["EPSG","9122"]],
+//         AUTHORITY["EPSG","4661"]],
+//     PROJECTION["Transverse_Mercator"],
+//     PARAMETER["latitude_of_origin",0],
+//     PARAMETER["central_meridian",24],
+//     PARAMETER["scale_factor",0.9996],
+//     PARAMETER["false_easting",500000],
+//     PARAMETER["false_northing",-6000000],
+//     UNIT["metre",1,
+//         AUTHORITY["EPSG","9001"]],
+//     AUTHORITY["EPSG","3059"]]
+export interface Spheroid {
   name: string
   a: number
   inverseF: number
 }
 
-interface Projection {
+export interface Projection {
   get name(): string
   
   directConversion(lat: number, lon: number): number[]
