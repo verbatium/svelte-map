@@ -1,17 +1,19 @@
 import type {ActionReturn} from 'svelte/action'
 
+type UseParam = number
+
 interface Attributes {
   'on:cursor'?: (e: CustomEvent<DOMPoint>) => void;
 }
 
-export function panZoom(node: SVGSVGElement): ActionReturn<{}, Attributes> {
+export function panZoom(node: SVGSVGElement): ActionReturn<UseParam, Attributes> {
+  const scaleFactor = 1.025
   const viewBox: DOMRect = node.viewBox.baseVal
-  const dY = -(viewBox.height + 2 * viewBox.y)
   const point: DOMPoint = node.createSVGPoint()
+  let dY = -(viewBox.height + 2 * viewBox.y)
   let pointerOrigin: DOMPoint = node.createSVGPoint()
   let isPointerDown: boolean = false
-  const scaleFactor = 1.025
-
+  
   function getRealPointFromEvent(event: PointerEvent): DOMPoint {
     point.x = event.clientX
     point.y = event.clientY
@@ -23,6 +25,7 @@ export function panZoom(node: SVGSVGElement): ActionReturn<{}, Attributes> {
   
   function onPointerMove(event: PointerEvent) {
     const pointerPosition = getRealPointFromEvent(event)
+    
     if (isPointerDown) {
       event.preventDefault()
       viewBox.x -= (pointerPosition.x - pointerOrigin.x)
@@ -43,16 +46,16 @@ export function panZoom(node: SVGSVGElement): ActionReturn<{}, Attributes> {
   }
   
   function onWheel(event: WheelEvent) {
-    event.preventDefault();
-    const scaleDelta =  event.deltaY < 0 ? 1 / scaleFactor : scaleFactor;
+    event.preventDefault()
+    const scaleDelta = event.deltaY < 0 ? 1 / scaleFactor : scaleFactor
     
-    point.x = event.clientX;
-    point.y = event.clientY;
-    const startPoint = point.matrixTransform(node.getScreenCTM()?.inverse());
-    viewBox.x -= (startPoint.x - viewBox.x) * (scaleDelta - 1);
-    viewBox.y -= (startPoint.y - viewBox.y) * (scaleDelta - 1);
-    viewBox.width *= scaleDelta;
-    viewBox.height *= scaleDelta;
+    point.x = event.clientX
+    point.y = event.clientY
+    const startPoint = point.matrixTransform(node.getScreenCTM()?.inverse())
+    viewBox.x -= (startPoint.x - viewBox.x) * (scaleDelta - 1)
+    viewBox.y -= (startPoint.y - viewBox.y) * (scaleDelta - 1)
+    viewBox.width *= scaleDelta
+    viewBox.height *= scaleDelta
   }
   
   const options: AddEventListenerOptions = {passive: false, capture: true}
@@ -64,6 +67,9 @@ export function panZoom(node: SVGSVGElement): ActionReturn<{}, Attributes> {
   
   
   return {
+    update(param) {
+      dY = param
+    },
     destroy() {
       node.removeEventListener('pointerdown', onPointerDown, options)
       node.removeEventListener('pointermove', onPointerMove, options)
