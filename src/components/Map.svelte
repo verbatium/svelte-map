@@ -2,16 +2,14 @@
 <script lang="ts">
   import type {PanEventDetail} from './Zoom'
   import {zoom} from './Zoom'
-  import TileLayer from './TileLayer.svelte'
   import {afterUpdate} from 'svelte'
   import {lest97} from '$lib/lamber'
   import {limitNumberToRange} from '$lib/graphics'
-  import WmsLayer from './WmsLayer.svelte'
 
   let svgElement: SVGElement
   let zoomSpeed = 0.05
-  let zoomLevel = 3
-  let z = 3
+  let zoomLevel = 4
+  let z = 4
   $: z = Math.floor(zoomLevel)
   $: changeViewBox(zoomLevel)
   let maxWidth = 740000 - 365000
@@ -37,12 +35,8 @@
     zoomLevel = limitNumberToRange(zoomLevel - zoomSpeed, 0, 14.95)
   }
 
-  function doZoom(value: number) {
-    zoomLevel = limitNumberToRange(zoomLevel + value, 0, 14.95)
-  }
-
   function changeViewBox(zoomLevel: number) {
-    var k = Math.pow(2, zoomLevel - 3)
+    var k = Math.pow(2, zoomLevel - 4)
 
     const centerX = viewBox.x + viewBox.width / 2
     const centerY = viewBox.y + viewBox.height / 2
@@ -61,15 +55,11 @@
     viewBox = {...viewBox, x: viewBox.x - event.detail.deltaX, y: viewBox.y - event.detail.deltaY}
   }
 </script>
-<button class="border-amber-600 border-2 m-3 p-3" onclick={()=>doZoom(-1)}>-</button>
-<button class="border-amber-600 border-2  m-3 p-3" onclick={()=>doZoom(+1)}>+</button>
-<span class="ml-2">Zoom: {zoomLevel} Location: {Math.round(cursor?.x)}, {Math.round(cursor?.y)}
-  ({Math.round(latLon[0] * 10000) / 10000}
-  , {Math.round(latLon[1] * 10000) / 10000}) {zoomLevel}</span>
+
 <svg
   {...$$restProps}
   bind:this={svgElement}
-  class="h-screen w-full touch-none {$$props.class ?? ''}"
+  class="w-full touch-none {$$props.class ?? ''}"
   on:cursor={(e)=>{cursor = e.detail}}
   on:pan={pan}
   on:zoomIn={zoomIn}
@@ -80,13 +70,6 @@
   xmlns="http://www.w3.org/2000/svg"
 >
   <g transform="matrix(1 0 0 -1 0 {2 * viewBox.y + viewBox.height})">
-    <!--    <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/foto@LEST" viewBox={viewBox} zoomLevel={z}/>-->
-    <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/vreljeef@LEST" transparent="false" viewBox={viewBox}
-               zoomLevel={z}/>
-    <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/topo@LEST" transparent="true" viewBox={viewBox}
-               zoomLevel={z}/>
-    <WmsLayer viewBox={viewBox} zoomLevel={zoomLevel}/>
-    <TileLayer tileMapUrl="https://tiles.maaamet.ee/tm/tms/1.0.0/hybriid@LEST" transparent="true" viewBox={viewBox}
-               zoomLevel={z}/>
+    <slot {viewBox} zoomLevel={z}/>
   </g>
 </svg>
