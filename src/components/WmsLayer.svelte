@@ -4,14 +4,14 @@
   import type {Point} from '$lib/graphics'
 
   function getUrl(viewBox: DOMRect): string {
-    let url = new URL('https://xgis.maaamet.ee/xgis2/service/1mm2i1r')
+    let url = new URL('https://gis.vta.ee/primar/wms_ip/TranspordiametNutimeri')
     url.searchParams.set('REQUEST', 'GetMap')
     url.searchParams.set('SERVICE', 'WMS')
     url.searchParams.set('VERSION', '1.1.1')
     url.searchParams.set('FORMAT', 'image/png')
-    url.searchParams.set('STYLES', '')
+    url.searchParams.set('STYLES', 'style-id-263')
     url.searchParams.set('TRANSPARENT', 'true')
-    url.searchParams.set('LAYERS', 'cells263')
+    url.searchParams.set('LAYERS', 'cells')
     url.searchParams.set('WIDTH', g.ownerSVGElement.clientWidth)
     url.searchParams.set('HEIGHT', g.ownerSVGElement.clientHeight)
     url.searchParams.set('SRS', 'EPSG:3301')
