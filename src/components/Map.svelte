@@ -4,8 +4,8 @@
 
   let width: number
   let height: number
-  let initialViewBox: DOMRect = {x: 365000, y: 6375000, width: 740000 - 365000, height: 6635000 - 6375000}
-  let viewBox = initialViewBox
+  export let initialViewBox: DOMRect = {x: 365000, y: 6375000, width: 740000 - 365000, height: 6635000 - 6375000}
+  $: viewBox = initialViewBox
   let zoomLevel = 0
   $: unitsPerPixel = (width && height && viewBox) ? Math.max(viewBox.width / width, viewBox.height / height) : 4000
   $: zoomLevel = Math.max(Math.min(Math.round(Math.log2(4000 / unitsPerPixel, 2)), 14), 0)
