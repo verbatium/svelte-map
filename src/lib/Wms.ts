@@ -101,7 +101,6 @@ export class Wms {
       mergeAttrs: true,
       xmlns: false,
     })
-    console.log(xml)
     const newVar = await parser.parseStringPromise(xml)
     const resourceUrl: string = newVar['Service'][0]['OnlineResource'][0]['xlink:href'][0]
     const capability = newVar['Capability'][0]

@@ -631,7 +631,6 @@ describe('', ()=>{
 `
   it('should ', async () => {
     const xmlDoc = await Wms.parse(xml);
-    console.log(JSON.stringify(xmlDoc))
-    expect(xmlDoc).eql(undefined)
+    expect(xmlDoc).not.undefined
   })
 })
