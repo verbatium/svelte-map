@@ -1,12 +1,11 @@
 <svelte:options namespace="svg"/>
 <script lang="ts">
-  import type {LineInit} from '$lib/graphics'
   import {lest97} from '$lib/LambertConformalConic'
 
   export let viewBox: DOMRect
-  $: lines = init(viewBox)
+  $: paths = init(viewBox)
 
-  function init(viewBox: DOMRect): LineInit[] {
+  function init(viewBox: DOMRect): string[] {
     if (!viewBox) return []
     let p = []
     p[0] = {x: viewBox.x, y: viewBox.y}
@@ -28,11 +27,11 @@
     for (let i = minLatLon[1]; i <= maxLatLon[1]; i++) {
       const p1 = lest97.directConversion(minLatLon[0],i)
       const p2 = lest97.directConversion(maxLatLon[0],i)
-      result.push({p1: {x: p1[0], y: p1[1] }, p2: {x: p2[0], y: p2[1]}})
+      result.push(`M ${p1[0]} ${p1[1]} L ${p2[0]} ${p2[1]}`)
       for (let j = minLatLon[0]; j <= maxLatLon[0]; j++) {
         const l1 = lest97.directConversion(j, i-1)
         const l3 = lest97.directConversion(j, i)
-        result.push({p1: {x: l1[0], y: l1[1] }, p2: {x: l3[0], y: l3[1]}})
+        result.push(`M ${l1[0]} ${l1[1]} L ${l3[0]} ${l3[1]}`)
       }
     }
     return result
@@ -41,6 +40,6 @@
 </script>
 
 
-{#each lines as l}
-  <line x1={l.p1.x} y1={l.p1.y} x2={l.p2.x} y2={l.p2.y} stroke="red" vector-effect="non-scaling-stroke"/>
+{#each paths as d}
+  <path d={d} stroke="{d.includes('A')? 'red': 'green'}" vector-effect="non-scaling-stroke" fill="none"/>
 {/each}
