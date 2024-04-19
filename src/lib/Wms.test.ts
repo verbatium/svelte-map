@@ -1,6 +1,5 @@
 import {describe, expect, it} from 'vitest'
 import {Wms} from '$lib/Wms'
-import {draw} from 'svelte/transition'
 
 
 describe('', ()=>{
@@ -630,7 +629,7 @@ describe('', ()=>{
 </WMT_MS_Capabilities>
 `
   it('should ', async () => {
-    const xmlDoc = await Wms.parse(xml);
+    const xmlDoc = await Wms.parse(xml, "http://localhost:8080");
     expect(xmlDoc).not.undefined
   })
 })
