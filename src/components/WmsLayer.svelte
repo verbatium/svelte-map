@@ -7,6 +7,7 @@
   export let layers = 'cells'
   export let styles = 'style-id-2142'
   export let mapFormat = 'image/png'
+  export let transparent = true
 
   function getUrl(viewBox: DOMRect): string {
     let url = new URL(baseUrl)
@@ -15,7 +16,7 @@
     url.searchParams.set('VERSION', '1.1.1')
     url.searchParams.set('FORMAT',mapFormat )
     url.searchParams.set('STYLES', styles)
-    url.searchParams.set('TRANSPARENT', 'true')
+    url.searchParams.set('TRANSPARENT', transparent)
     url.searchParams.set('LAYERS', layers)
     url.searchParams.set('WIDTH', g.ownerSVGElement.clientWidth)
     url.searchParams.set('HEIGHT', g.ownerSVGElement.clientHeight)

@@ -8,8 +8,8 @@
   import LatLonGrid from '../components/LatLonGrid.svelte'
 
   let tileMapServices: TileMapDescription[]
-  let checkedLayer = []
-  let selectedLayers = []
+  let checkedLayer :boolean[] = []
+  let selectedLayers :TileMapDescription[] = []
   let showMarine = false
   let showWeather = false
 
@@ -45,20 +45,20 @@
     {#each tileMapServices ?? [] as service, index}
       <div>
         <label>
-          <input type="checkbox" checkbox bind:checked={checkedLayer[index]}/>
+          <input type="checkbox"  bind:checked={checkedLayer[index]}/>
           {service.title}
         </label>
       </div>
     {/each}
     <div>
       <label>
-        <input bind:checked={showMarine} checkbox type="checkbox"/>
+        <input bind:checked={showMarine} type="checkbox"/>
         Marine map
       </label>
     </div>
 <div>
   <label>
-    <input bind:checked={showWeather} checkbox type="checkbox"/>
+    <input bind:checked={showWeather} type="checkbox"/>
     Weather
   </label>
 </div>
