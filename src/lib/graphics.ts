@@ -35,3 +35,8 @@ export interface Point {
   x: number,
   y: number
 }
+
+export interface LineInit {
+  p1: DOMPointInit
+  p2: DOMPointInit
+}
