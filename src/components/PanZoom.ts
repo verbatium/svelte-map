@@ -64,6 +64,7 @@ export function panZoom(node: SVGSVGElement, param: UseParam): ActionReturn<UseP
     evCache.push(event)
     isPointerDown = true
     pointerOrigin = getRealPointFromEvent(event)
+    node.dispatchEvent(new CustomEvent<DOMPoint>('cursormoved', {detail: pointerOrigin.matrixTransform(inverseMatrix)}))
   }
   
   function onPointerUp(ev: PointerEvent) {
