@@ -21,20 +21,22 @@
   }
 
   function resize() {
-    width = svg?.clientWidth ?? 100
-    height = svg?.clientHeight ?? 100
+    if (!svg) return
+    width = svg.clientWidth ?? 100
+    height = svg.clientHeight ?? 100
   }
 
 </script>
-<svelte:window on:resize={resize}/>
+<svelte:window on:resize={resize} class="pointer-events-none"/>
 <svg {...$$restProps}
      bind:this={svg}
-     class="border border-amber-600 m-20 bg-amber-200"
+     class=""
      cursor="crosshair"
-     on:cursor
+     on:cursormoved
      on:viewboxchanged
      use:panZoom={{inverseMatrix: new DOMMatrix(cartesianMatrix)?.inverse()}}
      viewBox={viewBoxString}
+     style="pointer-events: all"
 >
   <g transform={transform}>
     <slot/>
