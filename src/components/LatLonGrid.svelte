@@ -20,19 +20,24 @@
     const maxLatLon = pt.map(pp => pp.map(Math.ceil)).reduce((a, v) => [a[0] ? Math.max(a[0], v[0]) : v[0], a[1] ? Math.max(a[1], v[1]) : v[1]], [])
 
     let result = []
-    let center = lest97.directConversion(0,90)
+    let center = lest97.directConversion(0, 90)
     console.log(center)
 
 
-    for (let i = minLatLon[1]; i <= maxLatLon[1]; i++) {
-      const p1 = lest97.directConversion(minLatLon[0],i)
-      const p2 = lest97.directConversion(maxLatLon[0],i)
-      result.push(`M ${p1[0]} ${p1[1]} L ${p2[0]} ${p2[1]}`)
-      for (let j = minLatLon[0]; j <= maxLatLon[0]; j++) {
-        const l1 = lest97.directConversion(j, i-1)
+    for (let j = minLatLon[0]; j <= maxLatLon[0]; j++) {
+      const p1 = lest97.directConversion(minLatLon[0], minLatLon[1])
+      let d = [`M ${p1[0]} ${p1[1]}`]
+      for (let i = minLatLon[1]; i <= maxLatLon[1]; i++) {
         const l3 = lest97.directConversion(j, i)
-        result.push(`M ${l1[0]} ${l1[1]} L ${l3[0]} ${l3[1]}`)
+        d.push(`L ${l3[0]} ${l3[1]}`)
       }
+      result.push(d.join(' '))
+    }
+
+    for (let i = minLatLon[1]; i <= maxLatLon[1]; i++) {
+      const p1 = lest97.directConversion(minLatLon[0], i)
+      const p2 = lest97.directConversion(maxLatLon[0], i)
+      result.push(`M ${p1[0]} ${p1[1]} L ${p2[0]} ${p2[1]}`)
     }
     return result
   }
