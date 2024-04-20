@@ -16,6 +16,7 @@
   let showWeather = false
   let cursor: DOMPoint
   let cursorLL: DOMPoint
+  let userPosition: DOMPoint
 
   async function loadServices() {
     tileMapServices = (await downloadTileMapService('https://tiles.maaamet.ee/tm/tms/1.0.0/')).tileMaps.filter(l => l.srs === 'EPSG:3301')
@@ -29,11 +30,20 @@
     cursorLL = new DOMPoint(x, y)
   }
 
-  onMount(() => loadServices())
+  onMount(() => {
+    loadServices()
+    const watchID = navigator.geolocation.watchPosition((position: GeolocationPosition) => {
+      const [x, y] = lest97.directConversion(position.coords.latitude, position.coords.longitude)
+      userPosition = new DOMPoint(x, y)
+    },(error) => {
+      alert(`ERROR(${error.code}): ${error.message}`);
+    })
+    return () => navigator.geolocation.clearWatch(watchID);
+  })
 </script>
 <div class="flex">
   <div class="flex-auto w-full">
-    <div class="fixed bg-amber-50 top-2 left-2 border border-1 border-amber-900 w-1/4 pl-1">
+    <div class="fixed bg-amber-50 top-2 left-2 border border-1 border-amber-900 w-1/4 pl-1 grid grid-cols-2">
       <div>X:{cursor?.x.toFixed(2)} </div>
       <div>Y:{cursor?.y.toFixed(2)} </div>
       <div>B:{cursorLL?.x.toFixed(8)} </div>
@@ -52,7 +62,7 @@
       {#if showWeather}
         <WmsAnimatedLayer viewBox={viewBox} zoomLevel={zoomLevel} transparent={true}/>
       {/if}
-      <g transform="translate(545740,6587104)">
+      <g transform="translate({userPosition?.x ?? 0},{userPosition?.y?? 0})">
         <circle cx="0" cy="0" fill="none" r="10" stroke="red" stroke-width="2" vector-effect="non-scaling-stroke"/>
       </g>
       <LatLonGrid {viewBox}/>
