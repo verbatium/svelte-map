@@ -96,6 +96,7 @@ export function panZoom(node: SVGSVGElement, param: UseParam): ActionReturn<UseP
   node.addEventListener('pointermove', onPointerMove, options)
   node.addEventListener('pointerup', onPointerUp, options)
   node.addEventListener('pointercancel', onPointerUp, options)
+  node.addEventListener('pointerleave', onPointerUp, options)
   node.addEventListener('wheel', onWheel, options)
   
   
@@ -109,6 +110,7 @@ export function panZoom(node: SVGSVGElement, param: UseParam): ActionReturn<UseP
       node.removeEventListener('pointermove', onPointerMove, options)
       node.removeEventListener('pointerup', onPointerUp, options)
       node.removeEventListener('pointercancel', onPointerUp, options)
+      node.removeEventListener('pointerleave', onPointerUp, options)
       node.removeEventListener('wheel', onWheel, options)
     },
   }
