@@ -8,7 +8,7 @@
   $: viewBox = initialViewBox
   let zoomLevel = 0
   $: unitsPerPixel = (width && height && viewBox) ? Math.max(viewBox.width / width, viewBox.height / height) : 4000
-  $: zoomLevel = Math.max(Math.min(Math.round(Math.log2(4000 / unitsPerPixel, 2)), 14), 0)
+  $: zoomLevel = Math.max(Math.min(Math.round(Math.log2(4000 / unitsPerPixel)), 14), 0)
 
 </script>
 <SvgCartesian bind:height bind:width
