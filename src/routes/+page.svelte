@@ -6,6 +6,7 @@
   import WmsLayer from '../components/WmsLayer.svelte'
   import WmsAnimatedLayer from '../components/WmsAnimatedLayer.svelte'
   import LatLonGrid from '../components/LatLonGrid.svelte'
+  import LatRuller from '../components/LatRuller.svelte'
 
   let tileMapServices: TileMapDescription[]
   let checkedLayer :boolean[] = []
@@ -39,6 +40,7 @@
         <circle cx="0" cy="0" r="10" stroke-width="2" vector-effect="non-scaling-stroke" fill="none" stroke="red"/>
       </g>
       <LatLonGrid {viewBox}/>
+      <LatRuller {viewBox}/>
     </Map>
   </div>
   <div class="flex-none w-1/4">
