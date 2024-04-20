@@ -11,8 +11,8 @@
     x: {cursor?.x} y: {cursor?.y}
   </div>
   <SvgCartesian class="border border-amber-600 m-20 bg-amber-200"
-                on:cursor={(e)=>{cursor = e.detail}}
-                on:viewboxchanged={(e)=>console.log('viewboxchanged', e.detail)}
+                on:cursormoved={(e:CustomEvent<DOMPoint>)=>{cursor = e.detail}}
+                on:viewboxchanged={(e: CustomEvent<DOMRect>)=>console.log('viewboxchanged', e.detail)}
                 {viewBox}
                 width="50%"
   >

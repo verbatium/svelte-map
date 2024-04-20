@@ -13,7 +13,7 @@
 </script>
 <SvgCartesian bind:height bind:width
               on:viewboxchanged={(e:CustomEvent<DOMRect>)=>viewBox=e.detail}
-              on:cursor
+              on:cursormoved
               viewBox={initialViewBox}>
   <slot {viewBox} {zoomLevel}/>
 </SvgCartesian>

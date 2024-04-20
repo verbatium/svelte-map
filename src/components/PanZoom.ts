@@ -3,7 +3,7 @@ import type {ActionReturn} from 'svelte/action'
 type UseParam = { scaleFactor: number, inverseMatrix: DOMMatrix }
 
 interface Attributes {
-  'on:cursor'?: (e: CustomEvent<DOMPoint>) => void;
+  'on:cursormoved'?: (e: CustomEvent<DOMPoint>) => void;
   'on:viewboxchanged'?: (e: CustomEvent<DOMRect>) => void;
 }
 
@@ -39,7 +39,7 @@ export function panZoom(node: SVGSVGElement, param: UseParam): ActionReturn<UseP
       viewBox.y -= (pointerPosition.y - pointerOrigin.y)
       node.dispatchEvent(new CustomEvent<DOMRect>('viewboxchanged', {detail: transformRect(inverseMatrix, viewBox)}))
     } else {
-      node.dispatchEvent(new CustomEvent<DOMPoint>('cursor', {detail: pointerPosition.matrixTransform(inverseMatrix)}))
+      node.dispatchEvent(new CustomEvent<DOMPoint>('cursormoved', {detail: pointerPosition.matrixTransform(inverseMatrix)}))
     }
   }
   

@@ -20,9 +20,6 @@
     const maxLatLon = pt.map(pp => pp.map(Math.ceil)).reduce((a, v) => [a[0] ? Math.max(a[0], v[0]) : v[0], a[1] ? Math.max(a[1], v[1]) : v[1]], [])
 
     let result = []
-    let center = lest97.directConversion(0, 90)
-    console.log(center)
-
 
     for (let j = minLatLon[0]; j <= maxLatLon[0]; j++) {
       const p1 = lest97.directConversion(minLatLon[0], minLatLon[1])
