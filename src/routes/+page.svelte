@@ -8,6 +8,7 @@
   import LatLonGrid from '../components/LatLonGrid.svelte'
   import LatRuller from '../components/LatRuller.svelte'
   import {lest97} from '$lib/LambertConformalConic'
+  import Image from '../components/svg/Image.svelte'
 
   let tileMapServices: TileMapDescription[]
   let checkedLayer: boolean[] = []
@@ -35,10 +36,10 @@
     const watchID = navigator.geolocation.watchPosition((position: GeolocationPosition) => {
       const [x, y] = lest97.directConversion(position.coords.latitude, position.coords.longitude)
       userPosition = new DOMPoint(x, y)
-    },(error) => {
-      alert(`ERROR(${error.code}): ${error.message}`);
+    }, (error) => {
+      alert(`ERROR(${error.code}): ${error.message}`)
     })
-    return () => navigator.geolocation.clearWatch(watchID);
+    return () => navigator.geolocation.clearWatch(watchID)
   })
 </script>
 <div class="flex">
@@ -65,6 +66,9 @@
       <g transform="translate({userPosition?.x ?? 0},{userPosition?.y?? 0})">
         <circle cx="0" cy="0" fill="none" r="10" stroke="red" stroke-width="2" vector-effect="non-scaling-stroke"/>
       </g>
+      {#if userPosition}
+        <Image position={userPosition} height={2.129} width={4.75} url="./tesla-model-y.png"/>
+      {/if}
       <LatLonGrid {viewBox}/>
       <LatRuller {viewBox}/>
     </Map>
