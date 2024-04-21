@@ -18,6 +18,7 @@
   let cursor: DOMPoint
   let cursorLL: DOMPoint
   let userPosition: DOMPoint
+  let userHeading = 0
 
   async function loadServices() {
     tileMapServices = (await downloadTileMapService('https://tiles.maaamet.ee/tm/tms/1.0.0/')).tileMaps.filter(l => l.srs === 'EPSG:3301')
@@ -34,8 +35,9 @@
   onMount(() => {
     loadServices()
     const watchID = navigator.geolocation.watchPosition((position: GeolocationPosition) => {
-      const [x, y] = lest97.directConversion(position.coords.latitude, position.coords.longitude)
+      const [x, y, heading] = lest97.directConversion(position.coords.latitude, position.coords.longitude)
       userPosition = new DOMPoint(x, y)
+      userHeading = heading
     }, (error) => {
       alert(`ERROR(${error.code}): ${error.message}`)
     })
@@ -67,7 +69,7 @@
         <circle cx="0" cy="0" fill="none" r="10" stroke="red" stroke-width="2" vector-effect="non-scaling-stroke"/>
       </g>
       {#if userPosition}
-        <Image position={userPosition} height={2.129} width={4.75} url="./tesla-model-y.png"/>
+        <Image position={userPosition} height={2.129} width={4.75} url="./tesla-model-y.png" heading={userHeading}/>
       {/if}
       <LatLonGrid {viewBox}/>
       <LatRuller {viewBox}/>
