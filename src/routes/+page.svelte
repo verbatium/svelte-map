@@ -35,9 +35,9 @@
   onMount(() => {
     loadServices()
     const watchID = navigator.geolocation.watchPosition((position: GeolocationPosition) => {
-      const [x, y, heading] = lest97.directConversion(position.coords.latitude, position.coords.longitude)
+      const [x, y] = lest97.directConversion(position.coords.latitude, position.coords.longitude)
       userPosition = new DOMPoint(x, y)
-      userHeading = heading
+      userHeading = position.coords.heading
     }, (error) => {
       alert(`ERROR(${error.code}): ${error.message}`)
     })
