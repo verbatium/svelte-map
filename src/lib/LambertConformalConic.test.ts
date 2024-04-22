@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest'
-import {lest97, llcHolberg} from '$lib/LambertConformalConic'
+import {lest97, llcHolberg} from './LambertConformalConic'
 
 describe('lambert', () => {
   it('Lest97 ', () => {

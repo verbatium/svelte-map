@@ -19,27 +19,6 @@
   let cursorLL: DOMPoint
   let userPosition: DOMPoint
   let userHeading = 0
-  // function handlePosition() {
-  //   // const isIOS = !(
-  //   //   navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
-  //   //   navigator.userAgent.match(/AppleWebKit/)
-  //   // );
-  //   //
-  //   // if (isIOS) {
-  //   //   Notification.requestPermission()
-  //   //     .then((response: NotificationPermission) => {
-  //   //       if (response === "granted") {
-  //   //         window.addEventListener("deviceorientation", receivedNewHeading, true);
-  //   //       } else {
-  //   //         alert("has to be allowed!");
-  //   //       }
-  //   //     })
-  //   //     .catch(() => alert("not supported"));
-  //   // } else {
-  //   //   window.addEventListener("deviceorientationabsolute", receivedNewHeading, true);
-  //   // }
-  // }
-
 
   function receivedNewHeading(e: DeviceOrientationEvent) {
     e.webkitCompassHeading && (userHeading = e.webkitCompassHeading)
