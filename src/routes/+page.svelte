@@ -19,8 +19,39 @@
   let cursorLL: DOMPoint
   let userPosition: DOMPoint
   let userHeading = 0
+  // function handlePosition() {
+  //   // const isIOS = !(
+  //   //   navigator.userAgent.match(/(iPod|iPhone|iPad)/) &&
+  //   //   navigator.userAgent.match(/AppleWebKit/)
+  //   // );
+  //   //
+  //   // if (isIOS) {
+  //   //   Notification.requestPermission()
+  //   //     .then((response: NotificationPermission) => {
+  //   //       if (response === "granted") {
+  //   //         window.addEventListener("deviceorientation", receivedNewHeading, true);
+  //   //       } else {
+  //   //         alert("has to be allowed!");
+  //   //       }
+  //   //     })
+  //   //     .catch(() => alert("not supported"));
+  //   // } else {
+  //   //   window.addEventListener("deviceorientationabsolute", receivedNewHeading, true);
+  //   // }
+  // }
+
+
+  function receivedNewHeading(e: DeviceOrientationEvent) {
+    e.webkitCompassHeading && (userHeading = e.webkitCompassHeading)
+  }
 
   async function loadServices() {
+    try {
+      let permission = await DeviceOrientationEvent.requestPermission()
+      console.log('permission is', permission)
+    } catch (e) {
+      console.log(e)
+    }
     tileMapServices = (await downloadTileMapService('https://tiles.maaamet.ee/tm/tms/1.0.0/')).tileMaps.filter(l => l.srs === 'EPSG:3301')
   }
 
@@ -33,17 +64,23 @@
   }
 
   onMount(() => {
+
     loadServices()
-    const watchID = navigator.geolocation.watchPosition((position: GeolocationPosition) => {
+    const watchID = navigator.geolocation.watchPosition((position: GeolocationPosition): void => {
       const [x, y] = lest97.directConversion(position.coords.latitude, position.coords.longitude)
       userPosition = new DOMPoint(x, y)
       userHeading = position.coords.heading ?? 0
     }, (error) => {
       alert(`ERROR(${error.code}): ${error.message}`)
+    }, {
+      enableHighAccuracy: true,
+      maximumAge: 10000,
+      timeout: 30000,
     })
     return () => navigator.geolocation.clearWatch(watchID)
   })
 </script>
+<svelte:window on:deviceorientation={receivedNewHeading}/>
 <div class="flex">
   <div class="flex-auto w-full">
     <div class="fixed bg-amber-50 top-2 left-2 border border-1 border-amber-900 w-1/4 pl-1 grid grid-cols-2">
@@ -51,6 +88,8 @@
       <div>Y:{cursor?.y.toFixed(2)} </div>
       <div>B:{cursorLL?.x.toFixed(8)} </div>
       <div>L:{cursorLL?.y.toFixed(8)} </div>
+      <div>Heading: {userHeading}</div>
+      <div>Zoom: ????</div>
     </div>
     <Map let:viewBox let:zoomLevel on:cursormoved={onCursorMoved}>
       {#each selectedLayers as layer }
