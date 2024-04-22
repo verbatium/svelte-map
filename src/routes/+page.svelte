@@ -69,7 +69,6 @@
     const watchID = navigator.geolocation.watchPosition((position: GeolocationPosition): void => {
       const [x, y] = lest97.directConversion(position.coords.latitude, position.coords.longitude)
       userPosition = new DOMPoint(x, y)
-      userHeading = position.coords.heading ?? 0
     }, (error) => {
       alert(`ERROR(${error.code}): ${error.message}`)
     }, {
