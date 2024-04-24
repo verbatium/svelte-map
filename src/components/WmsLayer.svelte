@@ -2,7 +2,7 @@
   import {debounce} from '$lib/debounce'
   import {Epsg3301Tiles} from '$lib/tms/Epsg3301Tiles'
 
-  let tileSystem = new Epsg3301Tiles({tileSize: 1024})
+  let tileSystem = new Epsg3301Tiles({tileSize: 512})
   export let baseUrl = 'https://gis.vta.ee/primar/wms_ip/TranspordiametNutimeri'
   export let srs = 'EPSG:3301'
   export let layers = 'cells'
@@ -40,7 +40,7 @@
   function getTiles(viewBox: DOMRect): TileData[] {
     return tileSystem.visibleTilesByClientViewBox(viewBox, zoomLevel)
       .map(([x, y]) => {
-          let bboxByTileXY = tileSystem.bboxByTileXY(x, y, zoomLevel, 20) as DOMRect
+          let bboxByTileXY = tileSystem.bboxByTileXY(x, y, zoomLevel, 10) as DOMRect
           let clipBboxByTileXY = tileSystem.bboxByTileXY(x, y, zoomLevel) as DOMRect
           return {
             id: `${id}_${zoomLevel}_${x}_${y}`,
