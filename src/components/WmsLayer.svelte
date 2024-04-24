@@ -62,7 +62,7 @@
   let visibleTiles: Map<number, TileData[]> = new Map()
   let zoomLevels: number[] = []
 
-  const debouncedTileCalculator = debounce(calculateTiles, 20)
+  const debouncedTileCalculator = debounce(calculateTiles, 10)
   $: debouncedTileCalculator(viewBox, zoomLevel)
 
   function calculateTiles(viewBox: DOMRect, zoomLevel: number) {
@@ -79,15 +79,18 @@
 
 {#each zoomLevels as level}
   {#each visibleTiles?.get(level) ?? [] as tile (tile.href)}
-    <g transform="translate({tile.clipBbox.x}, {tile.clipBbox.y}) scale(1,-1) translate(0,{-tile.clipBbox.height})">
+    <g transform="translate({tile.imageBbox.x}, {tile.imageBbox.y}) scale(1,-1) translate(0,{-tile.imageBbox.height})">
       <defs>
         <clipPath id="{tile.id}_cp" >
-            <rect width={tile.clipBbox.width} height={tile.clipBbox.height}/>
+          <rect  x="{tile.clipBbox.x- tile.imageBbox.x}" y="{tile.clipBbox.y - tile.imageBbox.y}"
+                width={tile.clipBbox.width} height={tile.clipBbox.height}/>
         </clipPath>
       </defs>
-    </g>
-    <g transform="translate({tile.imageBbox.x}, {tile.imageBbox.y}) scale(1,-1) translate(0,{-tile.imageBbox.height})">
       <image clip-path="url(#{tile.id}_cp)" href={tile.href} width={tile.imageBbox.width} height={tile.imageBbox.height}/>
+      <rect x="{tile.clipBbox.x- tile.imageBbox.x}" y="{tile.clipBbox.y - tile.imageBbox.y}"
+            width={tile.clipBbox.width} height={tile.clipBbox.height}
+            stroke="black" stroke-width="1" vector-effect="non-scaling-stroke"
+            fill="none"/>
     </g>
   {/each}
 {/each}
