@@ -51,11 +51,12 @@ export class Epsg3301Tiles {
   visibleTilesByClientViewBox(viewBox: { x: number, y: number, width: number, height: number }, z: number): number[][] {
     const p1 = this.userXYToTileXY(viewBox.x, viewBox.y, z)
     const p2 = this.userXYToTileXY(viewBox.x + viewBox.width, viewBox.y + viewBox.height, z)
-    
     const diameter = Math.max(p2[0] - p1[0], p2[1] - p1[1])
     const radius = Math.floor(diameter / 2)
     const center = p1.map(i => i + radius)
-    return this.neighborsInSpiral(center[0], center[1], diameter)
+    const maxV = 1 << z
+    return this.neighborsInSpiral(center[0], center[1], diameter + 1)
+      .filter(([x, y]) => x >= 0 && y >= 0 && x < maxV && y < maxV)
   }
   
   neighborsInSpiral(x: number, y: number, diameter: number): number[][] {
@@ -70,3 +71,5 @@ export class Epsg3301Tiles {
     return result
   }
 }
+
+export const epsg3301Tiles = new Epsg3301Tiles()
