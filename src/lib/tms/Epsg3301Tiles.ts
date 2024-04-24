@@ -1,7 +1,12 @@
+export interface TileSystemInit {
+  tileSize: number | undefined
+}
+
 export class Epsg3301Tiles {
   get tileSize(): number {
     return this._tileSize
   }
+  
   get originY(): number {
     return this._originY
   }
@@ -9,9 +14,11 @@ export class Epsg3301Tiles {
   set originY(value: number) {
     this._originY = value
   }
+  
   get originX(): number {
     return this._originX
   }
+  
   minx = 365000.000000
   miny = 6375000.000000
   maxx = 740000.000000
@@ -19,11 +26,15 @@ export class Epsg3301Tiles {
   private _originX = 40500.000000
   private _originY = 5993000.000000
   srs = 'EPSG:3301'
-  private _tileSize = 256
+  private _tileSize
   mimeType = 'image/png'
   extension = 'png'
   unitsPerPixel0 = 4000
   maxLevel = 14
+  
+  constructor(init: TileSystemInit | undefined) {
+    this._tileSize = init?.tileSize ?? 256
+  }
   
   bboxByUserXY(x: number, y: number, z: number): { x: number, y: number, width: number, height: number } {
     const size = this._tileSize * this.unitsPerPixel(z)
@@ -85,4 +96,4 @@ export class Epsg3301Tiles {
   }
 }
 
-export const epsg3301Tiles = new Epsg3301Tiles()
+export const epsg3301Tiles = new Epsg3301Tiles(undefined)
