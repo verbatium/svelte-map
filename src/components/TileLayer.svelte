@@ -9,25 +9,29 @@
   export let transparent = false
 
 
-  function getTiles(viewBox: DOMRect): { href: string; x: number; y: number } [] {
-    return epsg3301Tiles.visibleTilesByClientViewBox(viewBox, zoomLevel).map(([x, y]) => ({
-        x: epsg3301Tiles.tileSize * x,
-        y: -epsg3301Tiles.tileSize * (y + 1),
-        href: `${tileMapUrl}/${zoomLevel}/${x}/${y}`,
-      }),
-    )
+  function getTiles(viewBox: DOMRect): { href: string; x: number; y: number, width: number, height: number } [] {
+    return epsg3301Tiles.visibleTilesByClientViewBox(viewBox, zoomLevel)
+      .map(([x, y]) => {
+          let bboxByTileXY = epsg3301Tiles.bboxByTileXY(x, y, zoomLevel)
+          return {
+            x: bboxByTileXY.x,
+            y: bboxByTileXY.y,
+            width: bboxByTileXY.width,
+            height: bboxByTileXY.height,
+            href: `${tileMapUrl}/${zoomLevel}/${x}/${y}`,
+          }
+        },
+      )
   }
 
-  let visibleTiles: Map<number, { x: number, y: number, href: string }[]> = new Map()
+  let visibleTiles: Map<number, { href: string; x: number; y: number, width: number, height: number }[]> = new Map()
   let layers: number[] = []
 
   const debouncedTileCalculator = debounce(calculateTiles, 20)
-  $: viewBox && debouncedTileCalculator(viewBox, zoomLevel)
-
+  $: debouncedTileCalculator(viewBox, zoomLevel)
 
   function calculateTiles(viewBox: DOMRect, zoomLevel: number) {
     visibleTiles.set(zoomLevel, getTiles(viewBox))
-    visibleTiles = new Map(visibleTiles)
     if (transparent) {
       layers = [zoomLevel]
     } else {
@@ -36,12 +40,12 @@
   }
 
 </script>
-<g transform="translate({epsg3301Tiles.originX}, {epsg3301Tiles.originY})">
-  {#each layers as level (level)}
-    <g transform="scale({epsg3301Tiles.unitsPerPixel(level)},{-(epsg3301Tiles.unitsPerPixel(level))})">
-      {#each visibleTiles?.get(level) ?? [] as tile (tile.href)}
-        <image href={tile.href} transform="translate({Math.floor(tile.x)}, {Math.floor(tile.y)})"/>
-      {/each}
+{#each layers as level (level)}
+  {#each visibleTiles?.get(level) ?? [] as tile (tile.href)}
+    <g transform="translate({tile.x}, {tile.y}) scale(1,-1) translate(0,{-tile.height})">
+      <image href={tile.href} width={tile.width} height={tile.height}/>
+      <rect width={tile.width} height={tile.height} stroke="black" stroke-width="1" vector-effect="non-scaling-stroke"
+            fill="none"/>
     </g>
   {/each}
-</g>
+{/each}
