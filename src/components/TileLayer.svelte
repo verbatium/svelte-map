@@ -41,7 +41,7 @@
   }
 
 
-  let visibleTiles: Map<number, Point[]> = new Map()
+  let visibleTiles: Map<number, {x:number,y: number,href: string}[]> = new Map()
   let layers: number[] = []
 
   const debouncedTileCalculator = debounce(calculateTiles, 20)
@@ -64,9 +64,9 @@
 {#if level && tilesPerAxis}
   <g transform="translate({tileMap.origin.x}, {tileMap.origin.y})">
     {#each layers as level (level)}
-      <g transform="scale({getLevel(level).unitsPerPixel},{-(getLevel(level).unitsPerPixel)})">
-        {#each visibleTiles.get(level) as tile (tile.href)}
-          <image x={Math.floor(tile.x)} y={Math.floor(tile.y)} href={tile.href}/>
+      <g transform="scale({getLevel(level)?.unitsPerPixel??1},{-(getLevel(level)?.unitsPerPixel??1)})">
+        {#each visibleTiles?.get(level) ?? [] as tile (tile.href)}
+          <image x="0" y="0" href={tile.href} transform="translate({Math.floor(tile.x)}, {Math.floor(tile.y)})"/>
         {/each}
       </g>
     {/each}
