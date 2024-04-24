@@ -1,32 +1,45 @@
 export class Epsg3301Tiles {
+  get tileSize(): number {
+    return this._tileSize
+  }
+  get originY(): number {
+    return this._originY
+  }
+  
+  set originY(value: number) {
+    this._originY = value
+  }
+  get originX(): number {
+    return this._originX
+  }
   minx = 365000.000000
   miny = 6375000.000000
   maxx = 740000.000000
   maxy = 6635000.000000
-  originX = 40500.000000
-  originY = 5993000.000000
+  private _originX = 40500.000000
+  private _originY = 5993000.000000
   srs = 'EPSG:3301'
-  tileSize = 256
+  private _tileSize = 256
   mimeType = 'image/png'
   extension = 'png'
   unitsPerPixel0 = 4000
   maxLevel = 14
   
   bboxByUserXY(x: number, y: number, z: number): { x: number, y: number, width: number, height: number } {
-    const size = this.tileSize * this.unitsPerPixel(z)
+    const size = this._tileSize * this.unitsPerPixel(z)
     return {
-      x: this.getStartOfTile(this.originX, x, size),
-      y: this.getStartOfTile(this.originY, y, size),
+      x: this.getStartOfTile(this._originX, x, size),
+      y: this.getStartOfTile(this._originY, y, size),
       width: size,
       height: size,
     }
   }
   
   bboxByTileXY(x: number, y: number, z: number): { x: number, y: number, width: number, height: number } {
-    const size = this.tileSize * this.unitsPerPixel(z)
+    const size = this._tileSize * this.unitsPerPixel(z)
     return {
-      x: this.originX + x * size,
-      y: this.originY + y * size,
+      x: this._originX + x * size,
+      y: this._originY + y * size,
       width: size,
       height: size,
     }
@@ -43,8 +56,8 @@ export class Epsg3301Tiles {
   
   userXYToTileXY(userX: number, userY: number, z: number): number[] {
     const perPixel = this.unitsPerPixel(z)
-    const tileX = Math.floor((userX - this.originX) / perPixel / this.tileSize)
-    const tileY = Math.floor((userY - this.originY) / perPixel / this.tileSize)
+    const tileX = Math.floor((userX - this._originX) / perPixel / this._tileSize)
+    const tileY = Math.floor((userY - this._originY) / perPixel / this._tileSize)
     return [tileX, tileY, z]
   }
   
