@@ -60,35 +60,12 @@ export class Epsg3301Tiles {
   
   neighborsInSpiral(x: number, y: number, diameter: number): number[][] {
     let n = 0
-    let x1 = x
-    let y1 = y
-    let result: number[][] = [[x, y]]
-    while (n < diameter) {
-      n++
-      if (n % 2 == 1)//if N is odd:
-      {
-        y1++ //move up 1 step
-        result.push([x1, y1])
-        for (let i = 0; i < n; i++) { // move down N steps
-          x1++
-          result.push([x1, y1])
-        }
-        for (let i = 0; i < n; i++) { //      move left N steps
-          y1--
-          result.push([x1, y1])
-        }
-      } else {//if N is odd:
-        y1-- //move down 1 step
-        result.push([x1, y1])
-        for (let i = 0; i < n; i++) { // move up N steps
-          x1--
-          result.push([x1, y1])
-        }
-        for (let i = 0; i < n; i++) { //move right N steps
-          y1++
-          result.push([x1, y1])
-        }
-      }
+    const result: number[][] = [[x, y]]
+    while (n++ < diameter) {
+      const sign = ((n % 2) << 1) - 1
+      result.push([x, y += sign])
+      for (let i = 0; i < n; i++) result.push([x += sign, y])
+      for (let i = 0; i < n; i++) result.push([x, y -= sign])
     }
     return result
   }

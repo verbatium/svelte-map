@@ -55,5 +55,6 @@ describe('Epsg3301Tiles', () => {
     expect(epsg3301Tiles.neighborsInSpiral(5,5,0)).eql([[5,5]])
     expect(epsg3301Tiles.neighborsInSpiral(5,5,1)).eql([[5,5], [5,6], [6,6], [6,5]])
     expect(epsg3301Tiles.neighborsInSpiral(5,5,2)).eql([[5,5], [5,6], [6,6], [6,5], [6,4], [5,4], [4,4], [4,5], [4,6]])
+    expect(epsg3301Tiles.neighborsInSpiral(5,5,3)).eql([[5,5], [5,6], [6,6], [6,5], [6,4], [5,4], [4,4], [4,5], [4,6], [4, 7,], [5, 7,], [6, 7,], [7, 7,], [7, 6,], [7, 5,], [7, 4,]])
   })
 })
