@@ -36,7 +36,6 @@
 
 
   function getTiles(viewBox: DOMRect): { href: string; x: number; y: number, width: number, height: number } [] {
-    console.log('getTiles', viewBox )
     return epsg3301Tiles.visibleTilesByClientViewBox(viewBox, zoomLevel)
       .map(([x, y]) => {
           let bboxByTileXY = epsg3301Tiles.bboxByTileXY(x, y, zoomLevel)
@@ -58,8 +57,8 @@
   $: debouncedTileCalculator(viewBox, zoomLevel)
 
   function calculateTiles(viewBox: DOMRect, zoomLevel: number) {
-    console.log('calculateTiles')
     visibleTiles.set(zoomLevel, getTiles(viewBox))
+    visibleTiles = new Map(visibleTiles)
     if (transparent) {
       zoomLevels = [zoomLevel]
     } else {

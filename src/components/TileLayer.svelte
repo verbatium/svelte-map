@@ -25,22 +25,22 @@
   }
 
   let visibleTiles: Map<number, { href: string; x: number; y: number, width: number, height: number }[]> = new Map()
-  let layers: number[] = []
+  let zoomLevels: number[] = []
 
   const debouncedTileCalculator = debounce(calculateTiles, 20)
   $: debouncedTileCalculator(viewBox, zoomLevel)
 
   function calculateTiles(viewBox: DOMRect, zoomLevel: number) {
     visibleTiles.set(zoomLevel, getTiles(viewBox))
+    visibleTiles = new Map(visibleTiles)
     if (transparent) {
-      layers = [zoomLevel]
+      zoomLevels = [zoomLevel]
     } else {
-      layers = Array.from(visibleTiles.keys()).filter(l => l <= zoomLevel).sort((a, b) => a - b)
+      zoomLevels = Array.from(visibleTiles.keys()).filter(l => l <= zoomLevel).sort((a, b) => a - b)
     }
   }
-
 </script>
-{#each layers as level (level)}
+{#each zoomLevels as level (level)}
   {#each visibleTiles?.get(level) ?? [] as tile (tile.href)}
     <g transform="translate({tile.x}, {tile.y}) scale(1,-1) translate(0,{-tile.height})">
       <image href={tile.href} width={tile.width} height={tile.height}/>
