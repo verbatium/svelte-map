@@ -9,6 +9,7 @@
   export let styles = 'style-id-2142'
   export let mapFormat = 'image/png'
   export let transparent = true
+  $: id = baseUrl.replace('https://', '').replaceAll('/', '_').replaceAll('.', '_')
 
   function getUrl(viewBox: {
     x: number,
@@ -36,22 +37,29 @@
   export let viewBox: DOMRect
 
 
-  function getTiles(viewBox: DOMRect): { href: string; x: number; y: number, width: number, height: number } [] {
+  function getTiles(viewBox: DOMRect): TileData[] {
     return tileSystem.visibleTilesByClientViewBox(viewBox, zoomLevel)
       .map(([x, y]) => {
-          let bboxByTileXY = tileSystem.bboxByTileXY(x, y, zoomLevel)
+          let bboxByTileXY = tileSystem.bboxByTileXY(x, y, zoomLevel, 20) as DOMRect
+          let clipBboxByTileXY = tileSystem.bboxByTileXY(x, y, zoomLevel) as DOMRect
           return {
-            x: bboxByTileXY.x,
-            y: bboxByTileXY.y,
-            width: bboxByTileXY.width,
-            height: bboxByTileXY.height,
+            id: `${id}_${zoomLevel}_${x}_${y}`,
+            clipBbox: clipBboxByTileXY,
+            imageBbox: bboxByTileXY,
             href: getUrl(bboxByTileXY, tileSystem.tileSize, tileSystem.tileSize),
           }
         },
       )
   }
 
-  let visibleTiles: Map<number, { href: string; x: number; y: number, width: number, height: number }[]> = new Map()
+  interface TileData {
+    id: string
+    href: string
+    imageBbox: DOMRect
+    clipBbox: DOMRect
+  }
+
+  let visibleTiles: Map<number, TileData[]> = new Map()
   let zoomLevels: number[] = []
 
   const debouncedTileCalculator = debounce(calculateTiles, 20)
@@ -71,10 +79,15 @@
 
 {#each zoomLevels as level}
   {#each visibleTiles?.get(level) ?? [] as tile (tile.href)}
-    <g transform="translate({tile.x}, {tile.y}) scale(1,-1) translate(0,{-tile.height})">
-      <image href={tile.href} width={tile.width} height={tile.height}/>
-      <rect width={tile.width} height={tile.height} stroke="black" stroke-width="1" vector-effect="non-scaling-stroke"
-            fill="none"/>
+    <g transform="translate({tile.clipBbox.x}, {tile.clipBbox.y}) scale(1,-1) translate(0,{-tile.clipBbox.height})">
+      <defs>
+        <clipPath id="{tile.id}_cp" >
+            <rect width={tile.clipBbox.width} height={tile.clipBbox.height}/>
+        </clipPath>
+      </defs>
+    </g>
+    <g transform="translate({tile.imageBbox.x}, {tile.imageBbox.y}) scale(1,-1) translate(0,{-tile.imageBbox.height})">
+      <image clip-path="url(#{tile.id}_cp)" href={tile.href} width={tile.imageBbox.width} height={tile.imageBbox.height}/>
     </g>
   {/each}
 {/each}

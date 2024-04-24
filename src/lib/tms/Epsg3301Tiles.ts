@@ -46,13 +46,14 @@ export class Epsg3301Tiles {
     }
   }
   
-  bboxByTileXY(x: number, y: number, z: number): { x: number, y: number, width: number, height: number } {
+  bboxByTileXY(x: number, y: number, z: number, overlapPercent: number = 0): { x: number, y: number, width: number, height: number } {
     const size = this._tileSize * this.unitsPerPixel(z)
+    const overlap = size *( overlapPercent/100)
     return {
-      x: this._originX + x * size,
-      y: this._originY + y * size,
-      width: size,
-      height: size,
+      x: this._originX + x * size - overlap,
+      y: this._originY + y * size - overlap,
+      width: size + 2 * overlap,
+      height: size + 2 * overlap,
     }
   }
   
