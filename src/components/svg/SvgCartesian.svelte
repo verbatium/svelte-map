@@ -30,7 +30,6 @@
 <svelte:window on:resize={resize} class="pointer-events-none"/>
 <svg {...$$restProps}
      bind:this={svg}
-     class=""
      cursor="crosshair"
      on:cursormoved
      on:viewboxchanged

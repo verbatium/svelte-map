@@ -2,7 +2,7 @@ import {describe, expect, it} from 'vitest'
 import {Epsg3301Tiles} from './Epsg3301Tiles'
 
 describe('Epsg3301Tiles', () => {
-  const epsg3301Tiles = new Epsg3301Tiles()
+  const epsg3301Tiles = new Epsg3301Tiles(undefined)
   
   it('unitsPerPixel at specified level ', () => {
     expect(epsg3301Tiles.unitsPerPixel(0)).eql(4000)
