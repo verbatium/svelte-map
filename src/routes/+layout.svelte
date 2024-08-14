@@ -1,9 +1,27 @@
-<script>
-    import '../app.css';
-    import {dev} from '$app/environment';
-    import {inject} from '@vercel/analytics';
+<script lang="ts">
+	import type { LayoutData } from "./$types";
+	import { page } from "$app/stores";
+	import Footer from "./Footer.svelte";
+	import Header from "./Header.svelte";
+	import { session } from "$lib/stores/session";
+	import '../app.css';
 
-    if (!dev) inject({mode: dev ? 'development' : 'production'});
+	export let data: LayoutData;
+
+	$: title = $page.data?.title ? $page.data.title + " | " : "";
+
+	$: $session.user = data.user;
+
 </script>
 
-<slot/>
+<svelte:head>
+	<title>{title}Smart Charger</title>
+</svelte:head>
+
+<Header />
+
+<main class="max-w-screen-sm mx-auto my-20 px-6">
+	<slot />
+</main>
+
+<Footer />
