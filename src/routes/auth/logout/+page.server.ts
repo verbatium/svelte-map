@@ -11,5 +11,5 @@ export async function load(event: PageServerLoadEvent) {
 		return s;
 	});
 	if (event.locals) delete event.locals.user;
-	throw redirect(303, '/#');
+	//throw redirect(303, '/#');
 }

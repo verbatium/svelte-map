@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { session } from '$lib/stores/session';
+	import { page } from '$app/stores';
+	$: user = $page?.data?.user
 </script>
 
 
@@ -10,12 +11,12 @@
 			<span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Smart Charger</span>
 		</a>
 		<div class="flex items-center md:order-2 space-x-1 md:space-x-2 rtl:space-x-reverse">
-			{#if $session.user}
+			{#if user}
 				<a
 					class="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
 					href="/auth/logout">Logout</a>
-				{#if $session.user.profileImageUrl }
-					<img class="w-10 h-10 rounded-full" src={$session.user.profileImageUrl} alt="logo" />
+				{#if user.profileImageUrl }
+					<img class="w-10 h-10 rounded-full" src={user.profileImageUrl} alt="logo" />
 				{:else}
 					<div class="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
 						<svg class="absolute w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20"
@@ -248,7 +249,7 @@
 						</div>
 					</div>
 				</li>
-				{#if $session.user}
+				{#if user}
 					<li>
 						<a
 							class="block py-2 px-3 text-gray-900 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700"

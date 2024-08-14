@@ -11,5 +11,3 @@ export const session = writable<Session>(
 		redirectUrl: null
 	}
 );
-
-session.subscribe((session) => console.log("session:", session));
