@@ -15,17 +15,6 @@ interface TokenResponse {
 	token_type: string;
 }
 
-interface UserDetails {
-	email: string;
-	full_name: string;
-	profile_image_url: string;
-	vault_uuid: string;
-}
-
-interface Info {
-	response: UserDetails;
-}
-
 export async function partnerAuthenticationToken(): Promise<string> {
 	const response = await fetch(TESLA_OAUTH_URL + '/token', {
 		method: 'POST',
@@ -86,22 +75,6 @@ export async function exchangeCodeForToken(
 	} else {
 		return {} as TokenResponse;
 	}
-}
-
-export async function userInfo(token: string) {
-	const BASE_URL = 'https://fleet-api.prd.eu.vn.cloud.tesla.com';
-
-	const options = {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${token}`
-		}
-	};
-
-	const response = await fetch(`${BASE_URL}/api/1/users/me`, options);
-	const me = (await response.json()) as unknown as Info;
-	return me.response;
 }
 
 function validateCodeAndStat(state: string, code: string, issuer: string): boolean {
