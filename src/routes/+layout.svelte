@@ -20,7 +20,7 @@
 
 <Header />
 
-<main class="max-w-screen-sm mx-auto my-20 px-6">
+<main class="w-full px-3">
 	<slot />
 </main>
 

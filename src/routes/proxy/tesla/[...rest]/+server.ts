@@ -8,9 +8,10 @@ export async function GET(a: ServerLoadEvent) {
 		error(401, 'access denied');
 	}
 	const path = a.params['rest'];
+	const q = a.url.search
 	if (path) {
-		console.log('call with  path', path);
-		let data = await httpGet( '/' + path, token);
+		console.log('call with  path', path + q);
+		let data = await httpGet( '/' + path + q, token);
 		return json(data);
 	}
 	return json({ error: 'Path missing' }, { status: 404 });

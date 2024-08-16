@@ -1,84 +1,73 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { type Car, type FeatureConfig, type Region, type Vehicle } from '$lib/tesla/api';
 
-	let meData: string;
-	let configData: FeatureConfig;
-	let ordersData: Vehicle[];
-	let vehiclesData: Car[];
-	let regionData: Region;
+	let apiPath = 'GET /api/1/users/me';
+	let result = '';
+	let vehicle_tag = '{vehicle_tag}';
 
 	export let data: PageData;
 
+	async function send() {
+		result = '';
+		let method = apiPath.split(' ')[0];
+		let path = apiPath.split(' ')[1];
 
-	async function meClick() {
-		const result = await fetch('/proxy/tesla/api/1/users/me');
-		meData = await result.text();
-	}
-
-	async function featureConfigClick() {
-		const result = await fetch('/proxy/tesla/api/1/users/feature_config');
-		configData = await result.json();
-	}
-
-	async function ordersClick() {
-		const result = await fetch('/proxy/tesla/api/1/users/orders');
-		ordersData = await result.json();
-	}
-
-	async function regionClick() {
-		const result = await fetch('/proxy/tesla/api/1/users/region');
-		regionData = await result.json();
-	}
-
-	async function vehiclesClick() {
-		const result = await fetch('/proxy/tesla/api/1/vehicles');
-		vehiclesData = await result.json();
+		let url = `/proxy/tesla${path}`;
+		const response = await fetch(url, { method });
+		let json = await response.json();
+		result = JSON.stringify(json, null, 2);
 	}
 
 </script>
 
-<section class="prose">
+<section class="prose w-full">
 	<h1>Dashboard</h1>
-	<p>🎉 Hello there <strong>{data.user?.email}</strong>, you're logged in!</p>
+	<p>🎉 Hello there <strong>{data.user?.fullName}</strong>, you're logged in!</p>
 	<div>
-		<button on:click={featureConfigClick}>feature_config</button>
+		<div>Test API</div>
 		<div>
-			{#if configData}
-				{JSON.stringify(configData)}
-			{/if}
+			<label>
+				Vin:
+				<input bind:value={vehicle_tag} class="border-2 rounded w-1/2" type="text">
+			</label>
 		</div>
-	</div>
-	<div>
-		<button on:click={meClick}>Me</button>
-		<div>
-			{#if meData}
-				{JSON.stringify(meData)}
-			{/if}
+		<div class="flex">
+			<input bind:value={apiPath} class="border-2 rounded w-1/2" list="api" type="text">
+			<datalist id="api">
+				<option>GET /api/1/users/me</option>
+				<option>GET /api/1/users/region</option>
+				<option>GET /api/1/users/orders</option>
+				<option>GET /api/1/users/feature_config</option>
+				<option>GET /api/1/vehicles</option>
+				<option>GET /api/1/vehicles/{vehicle_tag}/drivers</option>
+				<option>GET /api/1/dx/vehicles/subscriptions/eligibility?vin={vehicle_tag}</option>
+				<option>GET /api/1/dx/vehicles/upgrades/eligibility?vin={vehicle_tag}</option>
+				<option>POST /api/1/vehicles/fleet_status</option>
+				<option>POST /api/1/vehicles/fleet_telemetry_config</option>
+				<option>GET /api/1/vehicles/{vehicle_tag}/fleet_telemetry_config</option>
+				<option>GET /api/1/vehicles/{vehicle_tag}/mobile_enabled</option>
+				<option>GET /api/1/vehicles/{vehicle_tag}/nearby_charging_sites</option>
+				<option>GET /api/1/dx/vehicles/options?vin={vehicle_tag}</option>
+				<option>GET /api/1/vehicles/{vehicle_tag}/recent_alerts</option>
+				<option>GET /api/1/vehicles/{vehicle_tag}/release_notes</option>
+				<option>GET /api/1/vehicles/{vehicle_tag}/service_data</option>
+				<option>GET /api/1/vehicles/{vehicle_tag}/invitations</option>
+				<option>POST /api/1/vehicles/{vehicle_tag}/invitations</option>
+				<option>POST /api/1/invitations/redeem</option>
+				<option>POST /api/1/vehicles/{vehicle_tag}/invitations/[id]/revoke</option>
+				<option>POST /api/1/vehicles/{vehicle_tag}/signed_command</option>
+				<option>GET /api/1/subscriptions</option>
+				<option>POST /api/1/subscriptions</option>
+				<option>GET /api/1/vehicles/{vehicle_tag}</option>
+				<option>GET /api/1/vehicles/{vehicle_tag}/vehicle_data#not recommended</option>
+				<option>GET /api/1/vehicle_subscriptions</option>
+				<option>POST /api/1/vehicle_subscriptions</option>
+				<option>POST /api/1/vehicles/{vehicle_tag}/wake_up</option>
+				<option>GET /api/1/dx/warranty/details?vin={vehicle_tag}</option>
+			</datalist>
+			<button class="border-2 rounded px-3" on:click={send}>Send</button>
 		</div>
-	</div>
-	<div>
-		<button on:click={ordersClick}>orders</button>
-		<div>
-			{#if ordersData}
-				{JSON.stringify(ordersData)}
-			{/if}
-		</div>
-	</div>
-	<div>
-		<button on:click={regionClick}>region</button>
-		<div>
-			{#if regionData}
-				{JSON.stringify(regionData)}
-			{/if}
-		</div>
-	</div>
-	<div>
-		<button on:click={vehiclesClick}>Vehicles</button>
-		<div>
-			{#if vehiclesData}
-				{JSON.stringify(vehiclesData)}
-			{/if}
-		</div>
+
+		<pre class="p-4">{result}</pre>
 	</div>
 </section>
