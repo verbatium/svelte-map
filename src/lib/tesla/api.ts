@@ -10,12 +10,15 @@ function options(method: string, token: string) {
 	};
 }
 
-async function get<T>(token: string, path: string): Promise<T> {
-	const response = await fetch(`${BASE_URL}${path}`, options('GET', token));
-	const info = (await response.json()) as unknown as Response<T>;
-	return info.response;
+export async function httpGet(path: string, token: string) {
+	let response = await fetch(`${BASE_URL}${path}`, options('GET', token));
+	return await response.json();
 }
 
+async function get1<T>(token: string, path: string): Promise<T> {
+	const info = (await httpGet(path, token)) as unknown as Response<T>;
+	return info.response;
+}
 
 async function getArray<T>(token: string, path: string): Promise<ResponseArray<T>> {
 	const response = await fetch(`${BASE_URL}${path}`, options('GET', token));
@@ -33,15 +36,15 @@ export async function orders(token: string): Promise<Vehicle[]> {
 }
 
 export async function featureConfig(token: string): Promise<FeatureConfig> {
-	return await get(token, '/api/1/users/feature_config');
+	return await get1(token, '/api/1/users/feature_config');
 }
 
 export async function me(token: string): Promise<UserDetails> {
-	return await get(token, '/api/1/users/me');
+	return await get1(token, '/api/1/users/me');
 }
 
 export async function region(token: string): Promise<Region> {
-	return await get(token, '/api/1/users/region');
+	return await get1(token, '/api/1/users/region');
 }
 
 export async function vehicles(token: string) {

@@ -12,27 +12,27 @@
 
 
 	async function meClick() {
-		const result = await fetch('/api/tesla/users/me');
+		const result = await fetch('/proxy/tesla/api/1/users/me');
 		meData = await result.text();
 	}
 
 	async function featureConfigClick() {
-		const result = await fetch('/api/tesla/users/feature_config');
+		const result = await fetch('/proxy/tesla/api/1/users/feature_config');
 		configData = await result.json();
 	}
 
 	async function ordersClick() {
-		const result = await fetch('/api/tesla/users/orders');
+		const result = await fetch('/proxy/tesla/api/1/users/orders');
 		ordersData = await result.json();
 	}
 
 	async function regionClick() {
-		const result = await fetch('/api/tesla/users/region');
+		const result = await fetch('/proxy/tesla/api/1/users/region');
 		regionData = await result.json();
 	}
 
 	async function vehiclesClick() {
-		const result = await fetch('/api/tesla/vehicles');
+		const result = await fetch('/proxy/tesla/api/1/vehicles');
 		vehiclesData = await result.json();
 	}
 
