@@ -6,7 +6,6 @@ export async function energyPrice(startDateTime: Date) {
 	const url = new URL('https://estfeed.elering.ee/api/public/v1/energy-price/electricity');
 	console.log(startDateTime.toISOString());
 	const endDateTime = endOfTheDay(startDateTime);
-	endDateTime.setHours(23, 59, 59, 999);
 	url.searchParams.set('startDateTime', startDateTime.toISOString());
 	url.searchParams.set('endDateTime', endDateTime.toISOString());
 	url.searchParams.set('resolution', 'one_hour');
