@@ -3,7 +3,7 @@
 
 	export let data: PageData;
 </script>
-<div>{data.startDateTime}</div>
+<div>{data.startDateTime.toLocaleDateString()}</div>
 <div>Visits: {data.pageVisits}</div>
 <div class="grid  grid-cols-2 space-y-1">
 	<div>From</div>
