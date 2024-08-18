@@ -59,7 +59,7 @@
 				<option>GET /api/1/subscriptions</option>
 				<option>POST /api/1/subscriptions</option>
 				<option>GET /api/1/vehicles/{vehicle_tag}</option>
-				<option>GET /api/1/vehicles/{vehicle_tag}/vehicle_data#not recommended</option>
+				<option>GET /api/1/vehicles/{vehicle_tag}/vehicle_data?endpoints=location_data%3Bcharge_state%3Bclimate_state%3Bclosures_state%3Bdrive_state%3Bgui_settings%3Bvehicle_config%3Bvehicle_state</option>
 				<option>GET /api/1/vehicle_subscriptions</option>
 				<option>POST /api/1/vehicle_subscriptions</option>
 				<option>POST /api/1/vehicles/{vehicle_tag}/wake_up</option>

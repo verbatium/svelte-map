@@ -144,10 +144,18 @@ interface VehicleData {
 	backseat_token: string;
 	backseat_token_updated_at: string;
 	ble_autopair_enrolled: boolean;
-	charge_schedule_data: VehicleConfig
+	charge_schedule_data: VehicleConfig;
 	charge_state: ChargeState;
 	climate_state: ClimateState;
 	drive_state: {
+		gps_as_of: number;
+		heading: number;
+		latitude: number;
+		longitude: number;
+		native_latitude: number;
+		native_location_supported: number;
+		native_longitude: number;
+		native_type: string;
 		power: number;
 		shift_state: string;
 		speed: number;
@@ -163,8 +171,8 @@ interface VehicleData {
 		show_range_units: boolean;
 		timestamp: number;
 	};
-	parked_accessory: VehicleConfig
-	preconditioning_schedule_data: VehicleConfig
+	parked_accessory: VehicleConfig;
+	preconditioning_schedule_data: VehicleConfig;
 	vehicle_config: VehicleConfig;
 	vehicle_state: {
 		api_version: number;
@@ -349,7 +357,8 @@ interface ChargeState {
 	usable_battery_level: number;
 	user_charge_enable_request: string;
 }
-interface  VehicleConfig {
+
+interface VehicleConfig {
 	aux_park_lamps: string;
 	badge_version: number;
 	can_accept_navigation_requests: boolean;
