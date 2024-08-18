@@ -18,7 +18,7 @@ export async function load() {
 	let startDateTime = today();
 	return {
 		title: 'prices',
-		electricity: await hourlyPrice(startDateTime),
+		prices: await hourlyPrice(startDateTime),
 		startDateTime,
 		pageVisits: updatedPageVisits
 	};
