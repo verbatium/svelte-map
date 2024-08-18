@@ -4,6 +4,7 @@
 	export let data: PageData;
 </script>
 <div>{data.electricity[0].fromDateTime.toLocaleDateString()}</div>
+<div>Visits: {data.pageVisits}</div>
 <div class="grid  grid-cols-4 space-y-1">
 	<div>From</div>
 	<div>to</div>
