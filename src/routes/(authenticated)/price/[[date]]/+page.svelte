@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { isoDate, today } from '$lib/date';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
+
 </script>
 <div>Visits: {data.pageVisits}</div>
 <div>{data.startDateTime.toLocaleDateString()}</div>

@@ -11,7 +11,11 @@ export async function energyPrice(startDateTime: Date) {
 
 	let response = await fetch(url);
 	let body = await response.text();
-	return JSON.parse(body, reviver);
+	if (response.ok && body) {
+		console.log('body is: ', body);
+		return JSON.parse(body, reviver);
+	}
+	return []
 }
 
 export async function hourlyPrice(startDateTime: Date) {
