@@ -12,7 +12,6 @@ export async function energyPrice(startDateTime: Date) {
 	let response = await fetch(url);
 	let body = await response.text();
 	if (response.ok && body) {
-		console.log('body is: ', body);
 		return JSON.parse(body, reviver);
 	}
 	return []

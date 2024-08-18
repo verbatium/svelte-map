@@ -31,7 +31,7 @@ export function atTime(date: Date, time: string) {
 	const timeParts = time.split(' ');
 	dateParts[1] = timeParts[0];
 	dateParts[2] = timeParts[1];
-
+	
 	return new Date(dateParts.join(' '));
 }
 
@@ -41,5 +41,5 @@ export function isoDate(date: Date) {
 		month: 'numeric',
 		day: 'numeric',
 		hourCycle: 'h24'
-	}).format(new Date());
+	}).format(date);
 }
