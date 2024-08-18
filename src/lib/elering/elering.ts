@@ -1,14 +1,23 @@
 //https://dashboard.elering.ee/swagger-ui.html
 
-export async function energyPrice() {
+export async function energyPrice(startDateTime: Date) {
 	const url = new URL('https://estfeed.elering.ee/api/public/v1/energy-price/electricity');
-	url.searchParams.set('startDateTime', '2024-08-17T21:00:00.000Z');
-	url.searchParams.set('endDateTime', '2024-08-18T20:59:59.999Z');
+	console.log(startDateTime.toISOString());
+	const endDateTime = new Date(startDateTime);
+	endDateTime.setHours(23, 59, 59, 999);
+	url.searchParams.set('startDateTime', startDateTime.toISOString());
+	url.searchParams.set('endDateTime', endDateTime.toISOString());
 	url.searchParams.set('resolution', 'one_hour');
-	
+
 	let response = await fetch(url);
 	let body = await response.text();
 	return JSON.parse(body, reviver);
+}
+
+export async function hourlyPrice(startDateTime: Date) {
+	return ((await energyPrice(startDateTime)) as unknown as MarketPrice[])
+		.sort((a, b) => a.fromDateTime.getTime() - b.fromDateTime.getTime())
+		.map((p) => p.centsPerKwh);
 }
 
 export async function gasPrice() {
@@ -40,7 +49,6 @@ export interface MarketPrice {
 	fromDateTime: Date;
 	toDateTime: Date;
 }
-
 
 const resp = [
 	{
