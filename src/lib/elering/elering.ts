@@ -25,8 +25,6 @@ export async function gasPrice() {
 const dateFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,9})?(Z|(\+\d{2}:\d{2}))?$/;
 
 function reviver(key: any, value: any) {
-	console.log('typeof value', key, typeof value);
-	console.log('dateFormat.test(value)', dateFormat.test(value));
 	if (typeof value === 'string' && dateFormat.test(value)) {
 		return new Date(value);
 	}
