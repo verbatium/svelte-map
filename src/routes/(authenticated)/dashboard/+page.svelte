@@ -70,4 +70,6 @@
 
 		<pre class="p-4">{result}</pre>
 	</div>
+
+	<a href="https://www.tesla.com/_ak/tesla.wizardsailing.eu">Link your Cars</a>
 </section>
